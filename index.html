@@ -421,7 +421,21 @@
 </footer>
 
   <script>
-    // JS will be added in subsequent tasks
+    // Nav: transparent over hero → solid espresso on scroll
+    const nav = document.getElementById('nav');
+
+    function updateNav() {
+      if (window.scrollY > 40) {
+        nav.classList.add('bg-espresso', 'shadow-lg');
+        nav.classList.remove('bg-transparent');
+      } else {
+        nav.classList.remove('bg-espresso', 'shadow-lg');
+        nav.classList.add('bg-transparent');
+      }
+    }
+
+    updateNav(); // run once on load
+    window.addEventListener('scroll', updateNav, { passive: true });
   </script>
 </body>
 </html>
