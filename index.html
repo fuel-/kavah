@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -7,26 +7,29 @@
   <meta name="description" content="Build playlists of Bible verses. Listen. Reflect. Share." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js"}}</script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
       theme: {
         extend: {
           colors: {
-            cream:      '#FAF7F2',
-            espresso:   '#1A1208',
-            gold:       '#C9A84C',
-            amber:      '#8B5E3C',
-            'text-dark':'#2C1A0E',
-            'text-light':'#F5EDD8',
+            void:    '#0C0B10',
+            ink:     '#13111A',
+            surface: '#1C1926',
+            vellum:  '#F0EBE0',
+            mist:    '#9C95A8',
+            gold:    '#C9A55A',
+            ember:   '#A0522D',
           },
           fontFamily: {
-            serif: ['"Playfair Display"', 'Georgia', 'serif'],
-            sans:  ['Inter', 'system-ui', 'sans-serif'],
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['"DM Sans"', 'system-ui', 'sans-serif'],
+            mono:    ['"DM Mono"', 'monospace'],
           },
           maxWidth: {
-            container: '1280px',
+            container: '1200px',
           },
         },
       },
@@ -34,97 +37,581 @@
   </script>
   <style type="text/tailwindcss">
     @layer base {
-      body {
-        @apply font-sans text-text-dark bg-cream antialiased;
-      }
-      h1, h2, h3, h4 {
-        @apply font-serif;
-      }
-      html {
-        scroll-behavior: smooth;
+      html { scroll-behavior: smooth; }
+      body { @apply font-sans bg-void text-vellum antialiased; }
+      h1, h2, h3, h4 { @apply font-display; }
+      :focus-visible {
+        outline: 2px solid rgba(201,165,90,0.65);
+        outline-offset: 3px;
+        border-radius: 4px;
       }
     }
+
     @layer utilities {
-      .container-pad {
-        @apply max-w-container mx-auto px-6 lg:px-10;
+      .wrap { @apply max-w-container mx-auto px-6 lg:px-10; }
+
+      .reveal {
+        opacity: 0;
+        transform: translateY(28px);
+        transition: opacity 0.9s cubic-bezier(0.16,1,0.3,1), transform 0.9s cubic-bezier(0.16,1,0.3,1);
       }
+      .reveal.visible { opacity: 1; transform: translateY(0); }
+      .reveal-delay-1 { transition-delay: 0.1s; }
+      .reveal-delay-2 { transition-delay: 0.2s; }
+      .reveal-delay-3 { transition-delay: 0.3s; }
+      .reveal-delay-4 { transition-delay: 0.45s; }
+
+      @media (prefers-reduced-motion: reduce) {
+        .reveal { opacity: 1; transform: none; transition: none; }
+        .bar { animation: none !important; transform: scaleY(0.6); }
+      }
+
+      .rule { @apply flex items-center gap-4; }
+      .rule::before, .rule::after {
+        content: '';
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(to var(--dir, right), transparent, rgba(201,165,90,0.25));
+      }
+      .rule::after { --dir: left; }
+
+      .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 bg-gold text-void font-sans font-semibold text-sm tracking-wide px-7 py-3.5 rounded-full transition-all duration-300 cursor-pointer;
+        @apply hover:bg-gold/90 hover:shadow-[0_0_36px_rgba(201,165,90,0.35)] active:scale-[0.97];
+      }
+      .btn-ghost {
+        @apply inline-flex items-center justify-center gap-2 border border-vellum/20 text-vellum/65 font-sans font-medium text-sm tracking-wide px-7 py-3.5 rounded-full transition-all duration-300 cursor-pointer;
+        @apply hover:border-vellum/40 hover:text-vellum/90 active:scale-[0.97];
+      }
+
+      @keyframes audioBar {
+        0%, 100% { transform: scaleY(0.25); }
+        50%       { transform: scaleY(1); }
+      }
+      .bar {
+        @apply w-0.5 bg-gold rounded-full origin-bottom;
+        height: 20px;
+        animation: audioBar 0.9s ease-in-out infinite;
+      }
+      .bar:nth-child(1) { animation-delay: 0.00s; }
+      .bar:nth-child(2) { animation-delay: 0.13s; }
+      .bar:nth-child(3) { animation-delay: 0.26s; }
+      .bar:nth-child(4) { animation-delay: 0.07s; }
+      .bar:nth-child(5) { animation-delay: 0.20s; }
+      .bar:nth-child(6) { animation-delay: 0.35s; }
+      .bar:nth-child(7) { animation-delay: 0.16s; }
+      .bar:nth-child(8) { animation-delay: 0.29s; }
+
+      .mobile-menu {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.4s cubic-bezier(0.16,1,0.3,1);
+      }
+      .mobile-menu.open { max-height: 480px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- NAV -->
-  <nav id="nav" class="fixed top-0 left-0 right-0 z-50 transition-colors duration-300">
-    <div class="container-pad flex items-center justify-between h-16">
-      <!-- Logo -->
-      <a href="#" class="font-serif font-bold text-xl tracking-tight text-text-light" aria-label="Kavah home">
-        Kavah
+  <!-- Grain overlay -->
+  <div class="pointer-events-none fixed inset-0 z-[200] opacity-[0.022]"
+       style="background-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22300%22><filter id=%22n%22><feTurbulence type=%22fractalNoise%22 baseFrequency=%220.75%22 numOctaves=%224%22 stitchTiles=%22stitch%22/></filter><rect width=%22300%22 height=%22300%22 filter=%22url(%23n)%22 opacity=%221%22/></svg>');background-size:300px 300px"></div>
+
+  <!-- ── NAV ────────────────────────────────────────────────── -->
+  <header id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
+    <div class="wrap flex items-center justify-between h-16">
+
+      <a href="#" class="group flex items-center gap-2" aria-label="Kavah home">
+        <span class="font-display text-xl font-medium text-vellum tracking-tight">Kavah</span>
+        <span class="text-gold/50 group-hover:text-gold/80 transition-colors text-xs leading-none" aria-hidden="true">◆</span>
       </a>
-      <!-- Right side -->
+
+      <nav class="hidden md:flex items-center gap-8" aria-label="Primary navigation">
+        <a href="#features"     class="font-sans text-xs text-vellum/50 hover:text-vellum/90 transition-colors tracking-widest uppercase">Features</a>
+        <a href="#how-it-works" class="font-sans text-xs text-vellum/50 hover:text-vellum/90 transition-colors tracking-widest uppercase">How It Works</a>
+        <a href="#playlists"    class="font-sans text-xs text-vellum/50 hover:text-vellum/90 transition-colors tracking-widest uppercase">Playlists</a>
+        <a href="#donate"       class="font-sans text-xs text-vellum/50 hover:text-vellum/90 transition-colors tracking-widest uppercase">Donate</a>
+      </nav>
+
       <div class="flex items-center gap-4">
-        <a href="#" class="hidden sm:inline text-text-light/70 hover:text-text-light font-sans text-sm transition-colors">
-          Log In
-        </a>
-        <a href="#signup" class="bg-gold hover:bg-gold/90 text-espresso font-sans font-semibold text-sm px-5 py-2 rounded-full transition-colors">
-          Sign Up Free
-        </a>
+        <a href="#" class="hidden sm:block font-sans text-sm text-vellum/50 hover:text-vellum/80 transition-colors">Log In</a>
+        <a href="#signup" class="btn-primary hidden sm:inline-flex">Sign Up Free</a>
+        <button id="nav-toggle" class="md:hidden flex flex-col justify-center gap-[5px] w-10 h-10 cursor-pointer"
+                aria-label="Toggle menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span id="ham-1" class="block w-5 h-px bg-vellum/60 transition-all duration-300 origin-center"></span>
+          <span id="ham-2" class="block w-5 h-px bg-vellum/60 transition-all duration-300"></span>
+          <span id="ham-3" class="block w-5 h-px bg-vellum/60 transition-all duration-300 origin-center"></span>
+        </button>
       </div>
     </div>
-  </nav>
 
-  <!-- HERO -->
-  <section class="bg-espresso min-h-screen flex items-center pt-16">
-    <div class="container-pad w-full py-24 lg:py-32">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:gap-16">
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="mobile-menu md:hidden bg-void/96 backdrop-blur-xl border-b border-gold/[0.08]">
+      <nav class="wrap py-6 flex flex-col gap-1" aria-label="Mobile navigation">
+        <a href="#features"     class="font-sans text-sm text-vellum/65 hover:text-vellum transition-colors tracking-widest uppercase py-2">Features</a>
+        <a href="#how-it-works" class="font-sans text-sm text-vellum/65 hover:text-vellum transition-colors tracking-widest uppercase py-2">How It Works</a>
+        <a href="#playlists"    class="font-sans text-sm text-vellum/65 hover:text-vellum transition-colors tracking-widest uppercase py-2">Playlists</a>
+        <a href="#donate"       class="font-sans text-sm text-vellum/65 hover:text-vellum transition-colors tracking-widest uppercase py-2">Donate</a>
+        <div class="border-t border-gold/[0.08] pt-5 mt-3 flex flex-col gap-3">
+          <a href="#" class="font-sans text-sm text-vellum/55 hover:text-vellum/85 transition-colors">Log In</a>
+          <a href="#signup" class="btn-primary text-center">Sign Up Free</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+
+  <!-- ── HERO ──────────────────────────────────────────────── -->
+  <section id="hero" class="relative min-h-screen flex items-center overflow-hidden pt-16">
+
+    <canvas id="hero-canvas" class="absolute inset-0 w-full h-full pointer-events-none" aria-hidden="true"></canvas>
+
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full bg-gold/[0.05] blur-[130px]"></div>
+      <div class="absolute top-1/3 right-1/4 w-[400px] h-[400px] rounded-full bg-gold/[0.035] blur-[100px]"></div>
+      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-[900px] h-[200px] bg-void blur-[60px] rounded-full"></div>
+    </div>
+
+    <div class="wrap relative w-full py-20 lg:py-32">
+      <div class="grid lg:grid-cols-[1fr_420px] gap-16 xl:gap-24 items-center">
 
         <!-- Left: Copy -->
-        <div class="flex-1 max-w-xl">
-          <p class="text-gold font-sans text-sm font-semibold uppercase tracking-widest mb-6">
-            Scripture for every season
-          </p>
-          <h1 class="font-serif font-black text-text-light text-5xl sm:text-6xl lg:text-7xl leading-[1.05] mb-6">
-            Scripture that moves with&nbsp;you.
+        <div>
+          <div class="flex items-center gap-3 mb-8 reveal">
+            <span class="w-8 h-px bg-gold/50"></span>
+            <span class="font-mono text-xs text-gold/70 tracking-[0.22em] uppercase">Scripture for every season</span>
+          </div>
+
+          <h1 class="font-display font-light leading-[0.92] text-vellum mb-8 reveal reveal-delay-1"
+              style="font-size: clamp(3.5rem, 8vw, 6.5rem)">
+            Scripture<br>
+            <em class="text-gold">that moves</em><br>
+            with&nbsp;you.
           </h1>
-          <p class="text-text-light/70 font-sans text-lg leading-relaxed mb-10">
+
+          <p class="font-sans text-base lg:text-lg text-vellum/60 leading-relaxed max-w-md mb-10 reveal reveal-delay-2">
             Build playlists of Bible verses. Listen. Reflect. Share.
           </p>
-          <div class="flex flex-col sm:flex-row gap-4">
-            <a id="signup" href="#" class="bg-gold hover:bg-gold/90 text-espresso font-sans font-semibold px-8 py-4 rounded-full text-base text-center transition-colors">
-              Sign Up Free
-            </a>
-            <a href="#how-it-works" class="text-text-light/70 hover:text-text-light font-sans text-base flex items-center justify-center gap-2 transition-colors">
-              See how it works
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" />
-              </svg>
-            </a>
+
+          <div class="flex flex-wrap gap-4 reveal reveal-delay-3" id="signup">
+            <a href="#" class="btn-primary">Sign Up Free</a>
+            <a href="#how-it-works" class="btn-ghost">See how it works ↓</a>
+          </div>
+
+          <!-- Trust signal -->
+          <div class="mt-8 flex items-center gap-3 reveal reveal-delay-4">
+            <div class="flex items-center gap-0.5" aria-label="5 stars">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            </div>
+            <span class="font-mono text-[11px] text-vellum/45 tracking-wide">Loved by thousands of daily seekers</span>
           </div>
         </div>
 
-        <!-- Right: Now Playing Card -->
-        <div class="flex-1 flex justify-center lg:justify-end mt-16 lg:mt-0">
-          <div id="now-playing-card" class="w-full max-w-sm bg-white/5 border border-gold/20 rounded-2xl p-8 backdrop-blur-sm">
-            <div class="flex items-center gap-2 mb-6">
-              <span class="inline-flex gap-0.5 items-end h-4">
-                <span class="w-1 bg-gold rounded-full animate-bounce" style="height:40%;animation-delay:0s"></span>
-                <span class="w-1 bg-gold rounded-full animate-bounce" style="height:80%;animation-delay:0.15s"></span>
-                <span class="w-1 bg-gold rounded-full animate-bounce" style="height:60%;animation-delay:0.3s"></span>
-                <span class="w-1 bg-gold rounded-full animate-bounce" style="height:100%;animation-delay:0.1s"></span>
-                <span class="w-1 bg-gold rounded-full animate-bounce" style="height:50%;animation-delay:0.25s"></span>
-              </span>
-              <span class="text-gold font-sans text-xs font-semibold uppercase tracking-widest ml-1">Now Playing</span>
+        <!-- Right: Now Playing card -->
+        <div class="reveal reveal-delay-4 flex justify-center lg:justify-end">
+          <div class="relative w-full max-w-[380px]">
+            <div class="absolute -inset-6 bg-gold/[0.07] rounded-[3rem] blur-3xl pointer-events-none"></div>
+
+            <div class="relative bg-surface/80 backdrop-blur-xl border border-vellum/[0.09] rounded-3xl p-7 space-y-5 shadow-[0_24px_80px_rgba(0,0,0,0.5)]">
+
+              <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2.5">
+                  <span class="flex items-end gap-0.5 h-5" aria-hidden="true">
+                    <span class="bar opacity-80"></span>
+                    <span class="bar"></span>
+                    <span class="bar opacity-70"></span>
+                    <span class="bar opacity-90"></span>
+                    <span class="bar opacity-60"></span>
+                    <span class="bar opacity-85"></span>
+                    <span class="bar opacity-75"></span>
+                    <span class="bar opacity-95"></span>
+                  </span>
+                  <span class="font-mono text-[10px] text-gold/65 tracking-[0.2em] uppercase">Now Playing</span>
+                </div>
+                <span class="font-mono text-[10px] text-vellum/25 tracking-wide">1 / 12</span>
+              </div>
+
+              <div class="border-b border-vellum/[0.08] pb-5">
+                <p class="font-mono text-[10px] text-vellum/30 tracking-[0.18em] uppercase mb-1">Psalms of David</p>
+                <p class="font-display text-base font-medium text-gold/80">Morning Praise Collection</p>
+              </div>
+
+              <p class="font-display text-xl italic leading-relaxed text-vellum/85">
+                "The Lord is my shepherd; I&nbsp;shall not&nbsp;want."
+              </p>
+              <p class="font-mono text-[11px] text-gold/55 tracking-wider">— Psalm 23:1</p>
+
+              <div class="space-y-1.5">
+                <div class="h-px bg-vellum/[0.10] rounded-full overflow-hidden">
+                  <div class="h-full w-[38%] bg-gradient-to-r from-gold/50 to-gold/80 rounded-full"></div>
+                </div>
+                <div class="flex justify-between">
+                  <span class="font-mono text-[10px] text-vellum/25">0:34</span>
+                  <span class="font-mono text-[10px] text-vellum/25">1:29</span>
+                </div>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <button class="text-vellum/30 hover:text-vellum/65 transition-colors cursor-pointer" aria-label="Previous verse">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+                </button>
+                <button class="w-12 h-12 bg-gold rounded-full flex items-center justify-center hover:bg-gold/90 transition-all hover:shadow-[0_0_28px_rgba(201,165,90,0.50)] active:scale-95 cursor-pointer" aria-label="Play">
+                  <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="currentColor" class="translate-x-0.5"><path d="M8 5v14l11-7z"/></svg>
+                </button>
+                <button class="text-vellum/30 hover:text-vellum/65 transition-colors cursor-pointer" aria-label="Next verse">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm10-12v12h2V6h-2z"/></svg>
+                </button>
+              </div>
+
             </div>
-            <p class="text-text-light font-serif italic text-xl leading-relaxed mb-2" id="card-verse">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:flex flex-col items-center gap-2 text-vellum/20">
+        <span class="font-mono text-[10px] tracking-[0.25em] uppercase">Scroll</span>
+        <div class="w-px h-10 bg-gradient-to-b from-vellum/25 to-transparent"></div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── STATS BAR ──────────────────────────────────────────── -->
+  <div class="border-y border-gold/[0.08] bg-ink/50">
+    <div class="wrap py-10">
+      <div class="grid grid-cols-3 gap-6 text-center">
+        <div class="reveal">
+          <p class="font-display font-medium text-gold leading-none mb-1.5" style="font-size: clamp(1.75rem, 3vw, 2.5rem)">50k<span class="text-gold/55" style="font-size:0.65em">+</span></p>
+          <p class="font-mono text-[10px] text-vellum/45 tracking-[0.18em] uppercase">Verses played</p>
+        </div>
+        <div class="reveal reveal-delay-1 border-x border-gold/[0.08]">
+          <p class="font-display font-medium text-gold leading-none mb-1.5" style="font-size: clamp(1.75rem, 3vw, 2.5rem)">8k<span class="text-gold/55" style="font-size:0.65em">+</span></p>
+          <p class="font-mono text-[10px] text-vellum/45 tracking-[0.18em] uppercase">Playlists created</p>
+        </div>
+        <div class="reveal reveal-delay-2">
+          <p class="font-display font-medium text-gold leading-none mb-1.5" style="font-size: clamp(1.75rem, 3vw, 2.5rem)">1.5k<span class="text-gold/55" style="font-size:0.65em">+</span></p>
+          <p class="font-mono text-[10px] text-vellum/45 tracking-[0.18em] uppercase">Communities</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ── FEATURES ───────────────────────────────────────────── -->
+  <section id="features" class="py-28 lg:py-36">
+    <div class="wrap">
+
+      <div class="text-center mb-20">
+        <div class="rule text-[10px] font-mono tracking-[0.22em] text-gold/50 uppercase mb-6 reveal">Built for seekers</div>
+        <h2 class="font-display font-light text-vellum leading-tight reveal reveal-delay-1"
+            style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+          Everything you need to<br><em class="text-gold">dwell in the Word</em>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-5">
+
+        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
+          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Build Playlists</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Curate collections by theme, mood, or season of life. A playlist for grief. One for morning. One to share with someone you love.</p>
+        </div>
+
+        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-1" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
+          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Listen Aloud</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Every verse is read with care. Let Scripture wash over you while you commute, rest, or begin your morning.</p>
+        </div>
+
+        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-2" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
+          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Like &amp; Save</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Heart the verses that speak to you. They gather in your saved collection, always ready when you return.</p>
+        </div>
+
+        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-3" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
+          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+            </svg>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Share with Anyone</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Send a playlist to a friend, a congregation, or a grieving neighbor. No account required to listen.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── HOW IT WORKS ──────────────────────────────────────── -->
+  <section id="how-it-works" class="py-28 lg:py-36 bg-ink relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-void/60 via-transparent to-void/60 pointer-events-none"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-gold/[0.025] rounded-full blur-[120px] pointer-events-none"></div>
+
+    <div class="wrap relative">
+
+      <div class="text-center mb-20">
+        <div class="rule text-[10px] font-mono tracking-[0.22em] text-gold/50 uppercase mb-6 reveal">Simple by design</div>
+        <h2 class="font-display font-light text-vellum leading-tight reveal reveal-delay-1"
+            style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+          Three steps to<br><em class="text-gold">your first playlist</em>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-12 lg:gap-16 relative">
+
+        <!-- Connector line desktop -->
+        <div class="hidden md:block absolute top-[4.2rem] left-[calc(33.33%+1.5rem)] right-[calc(33.33%+1.5rem)] h-px pointer-events-none"
+             style="background: linear-gradient(to right, rgba(201,165,90,0.15), rgba(201,165,90,0.3), rgba(201,165,90,0.15))"></div>
+
+        <div class="text-center reveal">
+          <div class="relative inline-flex items-center justify-center mb-8">
+            <span class="font-display font-light text-gold/[0.07] select-none leading-none"
+                  style="font-size: 9rem; line-height: 1">1</span>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-11 h-11 border border-gold/30 rounded-full flex items-center justify-center bg-void/60 backdrop-blur-sm">
+                <span class="font-mono text-xs text-gold/70">01</span>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Find verses you love</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Search by keyword, book, or theme. Kavah surfaces the verses that speak to where you are.</p>
+        </div>
+
+        <div class="text-center reveal reveal-delay-1">
+          <div class="relative inline-flex items-center justify-center mb-8">
+            <span class="font-display font-light text-gold/[0.07] select-none leading-none"
+                  style="font-size: 9rem; line-height: 1">2</span>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-11 h-11 border border-gold/30 rounded-full flex items-center justify-center bg-void/60 backdrop-blur-sm">
+                <span class="font-mono text-xs text-gold/70">02</span>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Add them to a playlist</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Organize by whatever moves you — a theme, a season, a mood, a prayer.</p>
+        </div>
+
+        <div class="text-center reveal reveal-delay-2">
+          <div class="relative inline-flex items-center justify-center mb-8">
+            <span class="font-display font-light text-gold/[0.07] select-none leading-none"
+                  style="font-size: 9rem; line-height: 1">3</span>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <div class="w-11 h-11 border border-gold/30 rounded-full flex items-center justify-center bg-void/60 backdrop-blur-sm">
+                <span class="font-mono text-xs text-gold/70">03</span>
+              </div>
+            </div>
+          </div>
+          <h3 class="font-display text-2xl font-medium text-vellum mb-3">Listen, reflect, and share</h3>
+          <p class="font-sans text-sm text-vellum/55 leading-relaxed">Play through your list and send it to someone who needs it.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── FEATURED PLAYLISTS ────────────────────────────────── -->
+  <section id="playlists" class="py-28 lg:py-36">
+    <div class="wrap">
+
+      <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-16">
+        <div class="reveal">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="w-6 h-px bg-gold/50"></span>
+            <span class="font-mono text-[10px] text-gold/65 tracking-[0.22em] uppercase">Staff picks</span>
+          </div>
+          <h2 class="font-display font-light text-vellum leading-tight"
+              style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+            Start with something<br><em class="text-gold">beautiful</em>
+          </h2>
+        </div>
+        <a href="#" class="btn-ghost self-start sm:self-end shrink-0 reveal reveal-delay-1">Browse all →</a>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+
+        <article class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl overflow-hidden hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 flex flex-col reveal">
+          <div class="bg-gradient-to-br from-ink to-surface/60 px-7 py-6 border-b border-vellum/[0.06]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-[10px] text-gold/55 tracking-[0.18em] uppercase">12 verses</span>
+              <span class="flex items-end gap-0.5 h-3.5" aria-hidden="true">
+                <span class="w-0.5 h-1.5 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-3.5 bg-gold/50 rounded-full"></span>
+                <span class="w-0.5 h-2.5 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-3.5 bg-gold/45 rounded-full"></span>
+                <span class="w-0.5 h-2 bg-gold/30 rounded-full"></span>
+              </span>
+            </div>
+            <h3 class="font-display text-2xl font-medium text-vellum">Morning Praise</h3>
+          </div>
+          <div class="p-7 flex flex-col flex-1">
+            <p class="font-display text-lg italic text-vellum/70 leading-relaxed mb-3 flex-1">
+              "This is the day the Lord has made; let us rejoice and be glad in it."
+            </p>
+            <p class="font-mono text-[11px] text-gold/55 tracking-wider mb-6">— Psalm 118:24</p>
+            <button class="btn-primary w-full">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Play Playlist
+            </button>
+          </div>
+        </article>
+
+        <article class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl overflow-hidden hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 flex flex-col reveal reveal-delay-1">
+          <div class="bg-gradient-to-br from-ink to-surface/60 px-7 py-6 border-b border-vellum/[0.06]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-[10px] text-gold/55 tracking-[0.18em] uppercase">8 verses</span>
+              <span class="flex items-end gap-0.5 h-3.5" aria-hidden="true">
+                <span class="w-0.5 h-2.5 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-1.5 bg-gold/45 rounded-full"></span>
+                <span class="w-0.5 h-3.5 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-2 bg-gold/50 rounded-full"></span>
+                <span class="w-0.5 h-3 bg-gold/30 rounded-full"></span>
+              </span>
+            </div>
+            <h3 class="font-display text-2xl font-medium text-vellum">Verses on Peace</h3>
+          </div>
+          <div class="p-7 flex flex-col flex-1">
+            <p class="font-display text-lg italic text-vellum/70 leading-relaxed mb-3 flex-1">
+              "Peace I leave with you; my peace I give you. Not as the world gives."
+            </p>
+            <p class="font-mono text-[11px] text-gold/55 tracking-wider mb-6">— John 14:27</p>
+            <button class="btn-primary w-full">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Play Playlist
+            </button>
+          </div>
+        </article>
+
+        <article class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl overflow-hidden hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 flex flex-col reveal reveal-delay-2">
+          <div class="bg-gradient-to-br from-ink to-surface/60 px-7 py-6 border-b border-vellum/[0.06]">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-[10px] text-gold/55 tracking-[0.18em] uppercase">15 verses</span>
+              <span class="flex items-end gap-0.5 h-3.5" aria-hidden="true">
+                <span class="w-0.5 h-3.5 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-2 bg-gold/50 rounded-full"></span>
+                <span class="w-0.5 h-3 bg-gold/30 rounded-full"></span>
+                <span class="w-0.5 h-3.5 bg-gold/45 rounded-full"></span>
+                <span class="w-0.5 h-1.5 bg-gold/30 rounded-full"></span>
+              </span>
+            </div>
+            <h3 class="font-display text-2xl font-medium text-vellum">Psalms of David</h3>
+          </div>
+          <div class="p-7 flex flex-col flex-1">
+            <p class="font-display text-lg italic text-vellum/70 leading-relaxed mb-3 flex-1">
               "The Lord is my shepherd; I shall not want."
             </p>
-            <p class="text-gold/80 font-sans text-sm mb-8" id="card-ref">Psalm 23:1</p>
-            <div class="flex items-center justify-between">
-              <p class="text-text-light/50 font-sans text-xs">From: <span class="text-text-light/80">Psalms of David</span></p>
-              <button class="w-10 h-10 bg-gold rounded-full flex items-center justify-center hover:bg-gold/90 transition-colors" aria-label="Play">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-espresso ml-0.5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M8 5v14l11-7z"/>
-                </svg>
-              </button>
+            <p class="font-mono text-[11px] text-gold/55 tracking-wider mb-6">— Psalm 23:1</p>
+            <button class="btn-primary w-full">
+              <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              Play Playlist
+            </button>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── TESTIMONIALS ──────────────────────────────────────── -->
+  <section id="testimonials" class="py-28 lg:py-36 bg-ink relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-b from-void/60 via-transparent to-void/60 pointer-events-none"></div>
+
+    <div class="wrap relative">
+
+      <div class="text-center mb-20">
+        <div class="rule text-[10px] font-mono tracking-[0.22em] text-gold/50 uppercase mb-6 reveal">From the community</div>
+        <h2 class="font-display font-light text-vellum leading-tight reveal reveal-delay-1"
+            style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+          Words from<br><em class="text-gold">real seekers</em>
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-5">
+
+        <div class="bg-void/60 border border-vellum/[0.07] rounded-2xl p-7 flex flex-col gap-5 hover:border-gold/18 transition-colors reveal">
+          <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="font-display text-xl italic text-vellum/75 leading-relaxed flex-1">
+            "I use Kavah every morning before work. It's changed how I start my day."
+          </p>
+          <div class="flex items-center gap-3.5 pt-3 border-t border-vellum/[0.07]">
+            <div class="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+              <span class="font-sans text-xs font-semibold text-gold">MT</span>
+            </div>
+            <div>
+              <p class="font-sans text-sm font-medium text-vellum/85">M. Thompson</p>
+              <p class="font-mono text-[10px] text-vellum/35 tracking-wide">Daily devotion user</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-void/60 border border-vellum/[0.07] rounded-2xl p-7 flex flex-col gap-5 hover:border-gold/18 transition-colors reveal reveal-delay-1">
+          <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="font-display text-xl italic text-vellum/75 leading-relaxed flex-1">
+            "Finally a way to share the verses that mean the most to me with the people I love."
+          </p>
+          <div class="flex items-center gap-3.5 pt-3 border-t border-vellum/[0.07]">
+            <div class="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+              <span class="font-sans text-xs font-semibold text-gold">JR</span>
+            </div>
+            <div>
+              <p class="font-sans text-sm font-medium text-vellum/85">J. Rivera</p>
+              <p class="font-mono text-[10px] text-vellum/35 tracking-wide">Kavah early user</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-void/60 border border-vellum/[0.07] rounded-2xl p-7 flex flex-col gap-5 hover:border-gold/18 transition-colors reveal reveal-delay-2">
+          <div class="flex items-center gap-0.5" aria-label="5 out of 5 stars">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="#C9A55A" aria-hidden="true"><path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></svg>
+          </div>
+          <p class="font-display text-xl italic text-vellum/75 leading-relaxed flex-1">
+            "My small group uses Kavah playlists together. It's become a part of how we meet."
+          </p>
+          <div class="flex items-center gap-3.5 pt-3 border-t border-vellum/[0.07]">
+            <div class="w-9 h-9 rounded-full bg-gold/20 flex items-center justify-center shrink-0">
+              <span class="font-sans text-xs font-semibold text-gold">AK</span>
+            </div>
+            <div>
+              <p class="font-sans text-sm font-medium text-vellum/85">A. Kim</p>
+              <p class="font-mono text-[10px] text-vellum/35 tracking-wide">Small group leader</p>
             </div>
           </div>
         </div>
@@ -133,312 +620,195 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
-<section id="features" class="bg-cream py-24 lg:py-32">
-  <div class="container-pad">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-      <h2 class="font-serif font-bold text-text-dark text-4xl sm:text-5xl mb-4">
-        Everything you need to go deeper.
+
+  <!-- ── DONATE ────────────────────────────────────────────── -->
+  <section id="donate" class="py-28 lg:py-36 relative overflow-hidden">
+    <div class="absolute inset-0 pointer-events-none">
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] bg-gold/[0.05] rounded-full blur-[120px]"></div>
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-ember/[0.06] rounded-full blur-[80px]"></div>
+    </div>
+    <div class="wrap relative text-center max-w-2xl mx-auto">
+      <!-- Decorative ornament -->
+      <div class="flex justify-center mb-8 reveal" aria-hidden="true">
+        <div class="relative w-px h-10 bg-gradient-to-b from-transparent to-gold/35">
+          <div class="absolute top-1/2 -translate-y-1/2 -left-3.5 w-7 h-px bg-gold/30"></div>
+        </div>
+      </div>
+      <div class="rule text-[10px] font-mono tracking-[0.22em] text-gold/50 uppercase mb-6 reveal">Keep it free</div>
+      <h2 class="font-display font-light text-vellum leading-tight mb-6 reveal reveal-delay-1"
+          style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+        Keep Kavah free<br><em class="text-gold">for everyone.</em>
       </h2>
-      <p class="text-text-dark/60 font-sans text-lg">
-        Kavah brings your favourite verses together in one beautiful, listenable place.
+      <p class="font-sans text-base text-vellum/55 leading-relaxed mb-10 reveal reveal-delay-2">
+        Kavah is free and will always be free. Your generosity helps us keep it that way — so that anyone seeking Scripture, regardless of means, can access it. Every contribution keeps the Word moving.
       </p>
-    </div>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-8">
-
-      <!-- Card: Build Playlists -->
-      <div class="bg-white rounded-2xl p-8 shadow-sm border border-text-dark/5">
-        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-.895 2-2 2s-2-.895-2-2 .895-2 2-2 2 .895 2 2zm12-3c0 1.105-.895 2-2 2s-2-.895-2-2 .895-2 2-2 2 .895 2 2z"/>
-          </svg>
-        </div>
-        <h3 class="font-serif font-bold text-text-dark text-xl mb-2">Build Playlists</h3>
-        <p class="text-text-dark/60 font-sans text-base leading-relaxed">Curate collections of verses by theme, mood, or season of life.</p>
-      </div>
-
-      <!-- Card: Listen Aloud -->
-      <div class="bg-white rounded-2xl p-8 shadow-sm border border-text-dark/5">
-        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M19.114 5.636a9 9 0 010 12.728M16.463 8.288a5.25 5.25 0 010 7.424M6.75 8.25l4.72-4.72a.75.75 0 011.28.53v15.88a.75.75 0 01-1.28.53l-4.72-4.72H4.51c-.88 0-1.704-.507-1.938-1.354A9.01 9.01 0 012.25 12c0-.83.112-1.633.322-2.396C2.806 8.756 3.63 8.25 4.51 8.25H6.75z"/>
-          </svg>
-        </div>
-        <h3 class="font-serif font-bold text-text-dark text-xl mb-2">Listen Aloud</h3>
-        <p class="text-text-dark/60 font-sans text-base leading-relaxed">Hear every verse read aloud in a calm, clear voice. Perfect for commutes, walks, or quiet time.</p>
-      </div>
-
-      <!-- Card: Like & Save -->
-      <div class="bg-white rounded-2xl p-8 shadow-sm border border-text-dark/5">
-        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z"/>
-          </svg>
-        </div>
-        <h3 class="font-serif font-bold text-text-dark text-xl mb-2">Like &amp; Save</h3>
-        <p class="text-text-dark/60 font-sans text-base leading-relaxed">Heart individual verses and return to them anytime. Your favourites, always at hand.</p>
-      </div>
-
-      <!-- Card: Share with Anyone -->
-      <div class="bg-white rounded-2xl p-8 shadow-sm border border-text-dark/5">
-        <div class="w-12 h-12 bg-gold/10 rounded-xl flex items-center justify-center mb-6">
-          <svg class="w-6 h-6 text-gold" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M7.217 10.907a2.25 2.25 0 100 2.186m0-2.186c.18.324.283.696.283 1.093s-.103.77-.283 1.093m0-2.186l9.566-5.314m-9.566 7.5l9.566 5.314m0 0a2.25 2.25 0 103.935 2.186 2.25 2.25 0 00-3.935-2.186zm0-12.814a2.25 2.25 0 103.933-2.185 2.25 2.25 0 00-3.933 2.185z"/>
-          </svg>
-        </div>
-        <h3 class="font-serif font-bold text-text-dark text-xl mb-2">Share with Anyone</h3>
-        <p class="text-text-dark/60 font-sans text-base leading-relaxed">Send playlists to friends and family. No account required to listen.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-  <!-- HOW IT WORKS -->
-<section id="how-it-works" class="bg-espresso py-24 lg:py-32">
-  <div class="container-pad">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-      <h2 class="font-serif font-bold text-text-light text-4xl sm:text-5xl mb-4">
-        Simple as opening your Bible.
-      </h2>
-      <p class="text-text-light/60 font-sans text-lg">
-        Three steps to a playlist that's entirely yours.
-      </p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 lg:gap-8">
-
-      <!-- Step 1 -->
-      <div class="flex flex-col items-start lg:items-center lg:text-center">
-        <span class="font-serif font-black text-gold text-7xl leading-none mb-6">1</span>
-        <h3 class="font-serif font-bold text-text-light text-xl mb-3">Find verses you love</h3>
-        <p class="text-text-light/60 font-sans text-base leading-relaxed">Search by keyword, book, or theme. Kavah surfaces the verses that speak to where you are.</p>
-      </div>
-
-      <!-- Step 2 -->
-      <div class="flex flex-col items-start lg:items-center lg:text-center">
-        <span class="font-serif font-black text-gold text-7xl leading-none mb-6">2</span>
-        <h3 class="font-serif font-bold text-text-light text-xl mb-3">Add them to a playlist</h3>
-        <p class="text-text-light/60 font-sans text-base leading-relaxed">Organize by whatever moves you — a theme, a season, a mood, a prayer.</p>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="flex flex-col items-start lg:items-center lg:text-center">
-        <span class="font-serif font-black text-gold text-7xl leading-none mb-6">3</span>
-        <h3 class="font-serif font-bold text-text-light text-xl mb-3">Listen, reflect, and share</h3>
-        <p class="text-text-light/60 font-sans text-base leading-relaxed">Play through your list and send it to someone who needs it.</p>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-  <!-- FEATURED PLAYLISTS -->
-<section id="playlists" class="bg-cream py-24 lg:py-32">
-  <div class="container-pad">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-      <h2 class="font-serif font-bold text-text-dark text-4xl sm:text-5xl mb-4">
-        Start with something beautiful.
-      </h2>
-      <p class="text-text-dark/60 font-sans text-lg">
-        A few playlists to get you started. Every one curated with care.
-      </p>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-      <!-- Playlist: Morning Praise -->
-      <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-text-dark/5 flex flex-col">
-        <div class="bg-espresso px-8 pt-8 pb-6">
-          <p class="text-gold font-sans text-xs font-semibold uppercase tracking-widest mb-3">12 verses</p>
-          <h3 class="font-serif font-bold text-text-light text-2xl">Morning Praise</h3>
-        </div>
-        <div class="p-8 flex flex-col flex-1">
-          <p class="font-serif italic text-text-dark/70 text-base leading-relaxed mb-2 flex-1">
-            "This is the day the Lord has made; let us rejoice and be glad in it."
-          </p>
-          <p class="text-gold/70 font-sans text-sm mb-6">— Psalm 118:24</p>
-          <button class="w-full flex items-center justify-center gap-3 bg-gold hover:bg-gold/90 text-espresso font-sans font-semibold text-sm py-3 rounded-full transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Play Playlist
-          </button>
-        </div>
-      </div>
-
-      <!-- Playlist: Verses on Peace -->
-      <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-text-dark/5 flex flex-col">
-        <div class="bg-espresso px-8 pt-8 pb-6">
-          <p class="text-gold font-sans text-xs font-semibold uppercase tracking-widest mb-3">8 verses</p>
-          <h3 class="font-serif font-bold text-text-light text-2xl">Verses on Peace</h3>
-        </div>
-        <div class="p-8 flex flex-col flex-1">
-          <p class="font-serif italic text-text-dark/70 text-base leading-relaxed mb-2 flex-1">
-            "Peace I leave with you; my peace I give you. Not as the world gives."
-          </p>
-          <p class="text-gold/70 font-sans text-sm mb-6">— John 14:27</p>
-          <button class="w-full flex items-center justify-center gap-3 bg-gold hover:bg-gold/90 text-espresso font-sans font-semibold text-sm py-3 rounded-full transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Play Playlist
-          </button>
-        </div>
-      </div>
-
-      <!-- Playlist: Psalms of David -->
-      <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-text-dark/5 flex flex-col">
-        <div class="bg-espresso px-8 pt-8 pb-6">
-          <p class="text-gold font-sans text-xs font-semibold uppercase tracking-widest mb-3">15 verses</p>
-          <h3 class="font-serif font-bold text-text-light text-2xl">Psalms of David</h3>
-        </div>
-        <div class="p-8 flex flex-col flex-1">
-          <p class="font-serif italic text-text-dark/70 text-base leading-relaxed mb-2 flex-1">
-            "The Lord is my shepherd; I shall not want."
-          </p>
-          <p class="text-gold/70 font-sans text-sm mb-6">— Psalm 23:1</p>
-          <button class="w-full flex items-center justify-center gap-3 bg-gold hover:bg-gold/90 text-espresso font-sans font-semibold text-sm py-3 rounded-full transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-            Play Playlist
-          </button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-  <!-- TESTIMONIALS -->
-<section id="testimonials" class="bg-espresso py-24 lg:py-32">
-  <div class="container-pad">
-    <div class="text-center max-w-2xl mx-auto mb-16">
-      <h2 class="font-serif font-bold text-text-light text-4xl sm:text-5xl mb-4">
-        Words from the community.
-      </h2>
-    </div>
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-      <!-- Testimonial 1 -->
-      <div class="bg-white/5 border border-gold/10 rounded-2xl p-8">
-        <p class="font-serif italic text-text-light text-lg leading-relaxed mb-8">
-          "I use Kavah every morning before work. It's changed how I start my day."
-        </p>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-            <span class="font-sans font-semibold text-gold text-sm">MT</span>
-          </div>
-          <div>
-            <p class="text-text-light font-sans font-semibold text-sm">M. Thompson</p>
-            <p class="text-text-light/40 font-sans text-xs">Daily devotion user</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 2 -->
-      <div class="bg-white/5 border border-gold/10 rounded-2xl p-8">
-        <p class="font-serif italic text-text-light text-lg leading-relaxed mb-8">
-          "Finally a way to share the verses that mean the most to me with the people I love."
-        </p>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-            <span class="font-sans font-semibold text-gold text-sm">JR</span>
-          </div>
-          <div>
-            <p class="text-text-light font-sans font-semibold text-sm">J. Rivera</p>
-            <p class="text-text-light/40 font-sans text-xs">Kavah early user</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Testimonial 3 -->
-      <div class="bg-white/5 border border-gold/10 rounded-2xl p-8">
-        <p class="font-serif italic text-text-light text-lg leading-relaxed mb-8">
-          "My small group uses Kavah playlists together. It's become a part of how we meet."
-        </p>
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-full bg-gold/20 flex items-center justify-center">
-            <span class="font-sans font-semibold text-gold text-sm">AK</span>
-          </div>
-          <div>
-            <p class="text-text-light font-sans font-semibold text-sm">A. Kim</p>
-            <p class="text-text-light/40 font-sans text-xs">Small group leader</p>
-          </div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-  <!-- DONATE -->
-<section id="donate" class="bg-cream py-24 lg:py-32">
-  <div class="container-pad">
-    <div class="max-w-2xl mx-auto text-center">
-      <h2 class="font-serif font-bold text-text-dark text-4xl sm:text-5xl mb-6">
-        Keep Kavah free for everyone.
-      </h2>
-      <p class="text-text-dark/60 font-sans text-lg leading-relaxed mb-10">
-        Kavah is free and will always be free. Your generosity helps us keep it that way — so that anyone seeking Scripture, regardless of means, can access it. Every contribution, however small, keeps the Word moving.
-      </p>
-      <a href="#" class="inline-block bg-amber hover:bg-amber/90 text-text-light font-sans font-semibold px-10 py-4 rounded-full text-base transition-colors">
+      <a href="#" class="reveal reveal-delay-3 inline-flex items-center gap-2.5 bg-ember/80 hover:bg-ember text-vellum font-sans font-semibold text-sm tracking-wide px-8 py-4 rounded-full transition-all duration-300 hover:shadow-[0_0_40px_rgba(160,82,45,0.45)] active:scale-[0.97] cursor-pointer">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
         Support Kavah
       </a>
     </div>
-  </div>
-</section>
+  </section>
 
-  <!-- FOOTER -->
-<footer class="bg-espresso border-t border-gold/10 py-16">
-  <div class="container-pad">
-    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
 
-      <!-- Brand -->
-      <div>
-        <p class="font-serif font-bold text-text-light text-2xl mb-1">Kavah</p>
-        <p class="text-text-light/40 font-sans text-sm italic">Hope in every word.</p>
+  <!-- ── FOOTER ────────────────────────────────────────────── -->
+  <footer class="border-t border-gold/[0.08] py-12">
+    <div class="wrap">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 mb-10">
+
+        <div>
+          <div class="flex items-center gap-2 mb-1.5">
+            <span class="font-display text-xl font-medium text-vellum">Kavah</span>
+            <span class="text-gold/40 text-xs leading-none" aria-hidden="true">◆</span>
+          </div>
+          <p class="font-mono text-[11px] text-vellum/30 tracking-wider italic">Hope in every word.</p>
+        </div>
+
+        <nav aria-label="Footer navigation">
+          <ul class="flex flex-wrap gap-6">
+            <li><a href="#features"     class="font-sans text-sm text-vellum/40 hover:text-vellum/70 transition-colors">Features</a></li>
+            <li><a href="#how-it-works" class="font-sans text-sm text-vellum/40 hover:text-vellum/70 transition-colors">How It Works</a></li>
+            <li><a href="#playlists"    class="font-sans text-sm text-vellum/40 hover:text-vellum/70 transition-colors">Playlists</a></li>
+            <li><a href="#donate"       class="font-sans text-sm text-vellum/40 hover:text-vellum/70 transition-colors">Donate</a></li>
+          </ul>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full border border-gold/[0.14] flex items-center justify-center text-vellum/35 hover:text-gold/65 hover:border-gold/32 transition-colors">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+              <rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+            </svg>
+          </a>
+          <a href="#" aria-label="X (Twitter)" class="w-9 h-9 rounded-full border border-gold/[0.14] flex items-center justify-center text-vellum/35 hover:text-gold/65 hover:border-gold/32 transition-colors">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+        </div>
       </div>
 
-      <!-- Nav links -->
-      <nav aria-label="Footer navigation">
-        <ul class="flex flex-wrap gap-6">
-          <li><a href="#features" class="text-text-light/60 hover:text-text-light font-sans text-sm transition-colors">Features</a></li>
-          <li><a href="#how-it-works" class="text-text-light/60 hover:text-text-light font-sans text-sm transition-colors">How It Works</a></li>
-          <li><a href="#playlists" class="text-text-light/60 hover:text-text-light font-sans text-sm transition-colors">Playlists</a></li>
-          <li><a href="#donate" class="text-text-light/60 hover:text-text-light font-sans text-sm transition-colors">Donate</a></li>
-        </ul>
-      </nav>
-
-      <!-- Social icons -->
-      <div class="flex items-center gap-4">
-        <a href="#" class="w-9 h-9 rounded-full border border-gold/20 flex items-center justify-center text-text-light/50 hover:text-gold hover:border-gold/60 transition-colors" aria-label="Instagram">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-        </a>
-        <a href="#" class="w-9 h-9 rounded-full border border-gold/20 flex items-center justify-center text-text-light/50 hover:text-gold hover:border-gold/60 transition-colors" aria-label="X / Twitter">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        </a>
+      <div class="border-t border-gold/[0.07] pt-8">
+        <p class="font-mono text-[10px] text-vellum/22 text-center tracking-wide">&copy; 2026 Kavah. Made with care for the Word.</p>
       </div>
-
     </div>
+  </footer>
 
-    <div class="mt-12 pt-8 border-t border-gold/10">
-      <p class="text-text-light/30 font-sans text-xs text-center">
-        &copy; 2026 Kavah. Made with care for the Word.
-      </p>
-    </div>
-  </div>
-</footer>
 
-  <script>
-    // Nav: transparent over hero → solid espresso on scroll
-    const nav = document.getElementById('nav');
+  <script type="module">
+    import * as THREE from 'three';
 
-    function updateNav() {
-      if (window.scrollY > 40) {
-        nav.classList.add('bg-espresso', 'shadow-lg');
-        nav.classList.remove('bg-transparent');
-      } else {
-        nav.classList.remove('bg-espresso', 'shadow-lg');
-        nav.classList.add('bg-transparent');
+    const canvas = document.getElementById('hero-canvas');
+    const hero   = document.getElementById('hero');
+
+    const SEPARATION = 130, AMOUNTX = 38, AMOUNTY = 55;
+
+    const scene    = new THREE.Scene();
+    const camera   = new THREE.PerspectiveCamera(60, hero.clientWidth / hero.clientHeight, 1, 10000);
+    camera.position.set(0, 320, 1180);
+
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(hero.clientWidth, hero.clientHeight);
+
+    const positions = [], colors = [];
+    for (let ix = 0; ix < AMOUNTX; ix++) {
+      for (let iy = 0; iy < AMOUNTY; iy++) {
+        positions.push(
+          ix * SEPARATION - (AMOUNTX * SEPARATION) / 2,
+          0,
+          iy * SEPARATION - (AMOUNTY * SEPARATION) / 2
+        );
+        // gold: #C9A55A → (0.788, 0.647, 0.353)
+        colors.push(0.788, 0.647, 0.353);
       }
     }
 
-    updateNav(); // run once on load
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+    geo.setAttribute('color',    new THREE.Float32BufferAttribute(colors, 3));
+
+    const mat = new THREE.PointsMaterial({
+      size: 5, vertexColors: true, transparent: true, opacity: 0.22, sizeAttenuation: true,
+    });
+
+    scene.add(new THREE.Points(geo, mat));
+
+    let count = 0;
+    const posAttr = geo.attributes.position;
+    const posArr  = posAttr.array;
+
+    (function animate() {
+      requestAnimationFrame(animate);
+      let i = 0;
+      for (let ix = 0; ix < AMOUNTX; ix++) {
+        for (let iy = 0; iy < AMOUNTY; iy++) {
+          posArr[i * 3 + 1] = Math.sin((ix + count) * 0.3) * 50 + Math.sin((iy + count) * 0.5) * 50;
+          i++;
+        }
+      }
+      posAttr.needsUpdate = true;
+      renderer.render(scene, camera);
+      count += 0.065;
+    })();
+
+    new ResizeObserver(() => {
+      camera.aspect = hero.clientWidth / hero.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(hero.clientWidth, hero.clientHeight);
+    }).observe(hero);
+  </script>
+
+  <script>
+    // ── Nav scroll behaviour ──────────────────────────────────
+    const nav = document.getElementById('nav');
+    function updateNav() {
+      if (window.scrollY > 40) {
+        nav.classList.add('bg-void/90', 'backdrop-blur-md', 'border-b', 'border-gold/[0.08]', 'shadow-[0_1px_40px_rgba(0,0,0,0.5)]');
+      } else {
+        nav.classList.remove('bg-void/90', 'backdrop-blur-md', 'border-b', 'border-gold/[0.08]', 'shadow-[0_1px_40px_rgba(0,0,0,0.5)]');
+      }
+    }
+    updateNav();
     window.addEventListener('scroll', updateNav, { passive: true });
+
+    // ── Mobile menu ───────────────────────────────────────────
+    const navToggle = document.getElementById('nav-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const ham1 = document.getElementById('ham-1');
+    const ham2 = document.getElementById('ham-2');
+    const ham3 = document.getElementById('ham-3');
+    let menuOpen = false;
+
+    function closeMenu() {
+      menuOpen = false;
+      mobileMenu.classList.remove('open');
+      navToggle.setAttribute('aria-expanded', 'false');
+      ham1.style.transform = '';
+      ham2.style.opacity = '1';
+      ham3.style.transform = '';
+    }
+
+    navToggle.addEventListener('click', () => {
+      menuOpen = !menuOpen;
+      mobileMenu.classList.toggle('open', menuOpen);
+      navToggle.setAttribute('aria-expanded', String(menuOpen));
+      ham1.style.transform = menuOpen ? 'translateY(6px) rotate(45deg)' : '';
+      ham2.style.opacity   = menuOpen ? '0' : '1';
+      ham3.style.transform = menuOpen ? 'translateY(-6px) rotate(-45deg)' : '';
+    });
+
+    mobileMenu.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+
+    // ── Scroll-reveal ─────────────────────────────────────────
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => io.observe(el));
   </script>
 </body>
 </html>
