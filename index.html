@@ -142,6 +142,31 @@
       .pbar:nth-child(1) { animation-delay: 0.00s; height: 6px; }
       .pbar:nth-child(2) { animation-delay: 0.17s; height: 14px; }
       .pbar:nth-child(3) { animation-delay: 0.33s; height: 10px; }
+
+      /* Logo roll effect */
+      .logo-word {
+        display: inline-block;
+        position: relative;
+        overflow: hidden;
+      }
+      .logo-front,
+      .logo-back {
+        display: block;
+        transition: transform 0.45s cubic-bezier(0.16,1,0.3,1);
+      }
+      .logo-back {
+        position: absolute;
+        top: 0; left: 0; width: 100%;
+        transform: translateY(100%);
+        direction: rtl;
+        unicode-bidi: isolate;
+      }
+      .logo-anchor:hover .logo-front {
+        transform: translateY(-100%);
+      }
+      .logo-anchor:hover .logo-back {
+        transform: translateY(0);
+      }
     }
   </style>
 </head>
@@ -155,8 +180,11 @@
   <header id="nav" class="fixed top-0 left-0 right-0 z-50 transition-all duration-500">
     <div class="wrap flex items-center justify-between h-16">
 
-      <a href="#" class="group flex items-center gap-2" aria-label="Kavah home">
-        <span class="font-display text-xl font-medium text-vellum tracking-tight">Kavah</span>
+      <a href="#" class="group logo-anchor flex items-center gap-2" aria-label="Kavah home">
+        <span class="font-display text-xl font-medium text-vellum tracking-tight logo-word">
+          <span class="logo-front">Kavah</span>
+          <span class="logo-back" aria-hidden="true">קָוָה</span>
+        </span>
         <span class="text-gold/50 group-hover:text-gold/80 transition-colors text-xs leading-none" aria-hidden="true">◆</span>
       </a>
 
