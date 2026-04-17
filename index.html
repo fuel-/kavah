@@ -283,9 +283,9 @@
 
           <h1 class="font-display font-light leading-[0.92] text-vellum mb-8 reveal reveal-delay-1"
               style="font-size: clamp(3.5rem, 8vw, 6.5rem)">
-            Scripture<br>
-            <em class="text-gold">that moves</em><br>
-            with&nbsp;you.
+            <span id="hero-line-1">כתבי הקודש</span><br>
+            <em class="text-gold"><span id="hero-line-2">שנעים</span></em><br>
+            <span id="hero-line-3">איתך</span>
           </h1>
 
           <p class="font-sans text-base lg:text-lg text-vellum/60 leading-relaxed max-w-md mb-10 reveal reveal-delay-2">
@@ -938,6 +938,41 @@
   </script>
 
   <script>
+    // ── Hero headline: Hebrew → English descramble after 2s ──
+    (function () {
+      const CHARS = 'אבגדהוזחטיכלמנסעפצקרשתABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lines = [
+        { id: 'hero-line-1', target: 'Scripture' },
+        { id: 'hero-line-2', target: 'that moves' },
+        { id: 'hero-line-3', target: 'with\u00a0you.' },
+      ];
+
+      function scrambleLine(el, target) {
+        const duration = target.length * 1;
+        let frame = 0;
+        const iv = setInterval(() => {
+          frame++;
+          const revealed = Math.floor((frame / duration) * target.length);
+          el.textContent = target.split('').map((ch, i) => {
+            if (ch === ' ' || ch === '\u00a0') return ch;
+            if (i < revealed) return ch;
+            return CHARS[Math.floor(Math.random() * CHARS.length)];
+          }).join('');
+          if (frame >= duration) {
+            clearInterval(iv);
+            el.textContent = target;
+          }
+        }, 130);
+      }
+
+      setTimeout(() => {
+        lines.forEach(({ id, target }) => {
+          const el = document.getElementById(id);
+          if (el) scrambleLine(el, target);
+        });
+      }, 2000);
+    })();
+
     // ── Logo intro: Hebrew → English roll after 2s ───────────
     const logoAnchor = document.querySelector('.logo-anchor');
     if (logoAnchor) {
