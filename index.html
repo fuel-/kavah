@@ -571,6 +571,16 @@
   <!-- ── PLAYLIST SHOWCASE ────────────────────────────────── -->
   <section class="relative overflow-hidden" aria-label="Example playlist: Morning Praise">
 
+    <!-- Section preamble -->
+    <div class="wrap pt-24 pb-10 text-center">
+      <div class="rule text-[10px] font-mono tracking-[0.22em] text-gold/50 uppercase mb-6 reveal">See it in action</div>
+      <h2 class="font-display font-light text-vellum leading-tight reveal reveal-delay-1"
+          style="font-size: clamp(2.5rem, 5vw, 3.75rem)">
+        This is what a<br><em class="text-gold">playlist looks like</em>
+      </h2>
+      <p class="font-sans text-sm text-vellum/45 mt-5 reveal reveal-delay-2">Click any verse to select it. Hit play to step through the collection.</p>
+    </div>
+
     <!-- Amber gradient header -->
     <div class="relative" style="background: linear-gradient(to bottom, #4a2d08, #1c1208 40%, #0C0B10)">
       <div class="pointer-events-none absolute inset-0"
@@ -589,8 +599,13 @@
         <div class="flex flex-col sm:flex-row items-end gap-8 mb-8">
 
           <!-- Cover art: sacred geometry -->
-          <div class="relative w-52 h-52 shrink-0 rounded-xl overflow-hidden" aria-hidden="true"
+          <div class="relative w-52 h-52 shrink-0 rounded-xl overflow-hidden"
                style="background: linear-gradient(135deg, #1d1005, #0c0802); box-shadow: 0 32px 90px rgba(0,0,0,0.85), 0 0 0 1px rgba(201,165,90,0.09)">
+            <!-- Live preview badge -->
+            <div class="absolute top-3 right-3 z-10 flex items-center gap-1.5 bg-void/70 backdrop-blur-sm border border-gold/20 rounded-full px-2.5 py-1">
+              <span class="w-1.5 h-1.5 rounded-full bg-gold animate-pulse shrink-0"></span>
+              <span class="font-mono text-[8px] text-gold/70 tracking-[0.15em] uppercase">Live preview</span>
+            </div>
             <div class="absolute inset-0 flex items-center justify-center">
               <div class="absolute rounded-full" style="width:200px;height:200px;border:1px solid rgba(201,165,90,0.07)"></div>
               <div class="absolute rounded-full" style="width:158px;height:158px;border:1px solid rgba(201,165,90,0.11)"></div>
