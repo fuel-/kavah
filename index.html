@@ -140,6 +140,55 @@
         background: #C9A55A;
       }
 
+      /* ── Feature spotlight cards ───────────────────────── */
+      .fc-spotlight {
+        --border:   2;
+        --radius:   16;
+        --size:     260;
+        --border-size:    calc(var(--border) * 1px);
+        --spotlight-size: calc(var(--size)   * 1px);
+        --hue: calc(var(--base, 40) + (var(--xp, 0.5) * var(--spread, 50)));
+        position: relative;
+        border-radius: calc(var(--radius) * 1px);
+        border: var(--border-size) solid rgba(240,235,224,0.06);
+        background:
+          radial-gradient(
+            var(--spotlight-size) var(--spotlight-size) at var(--x, -999px) var(--y, -999px),
+            hsl(var(--hue) 70% 62% / 0.07) 0%,
+            transparent 70%
+          ),
+          rgba(28,25,38,0.45);
+        transition: border-color 0.4s ease;
+      }
+      .fc-spotlight::before,
+      .fc-spotlight::after {
+        pointer-events: none;
+        content: "";
+        position: absolute;
+        inset: calc(var(--border-size) * -1);
+        border: var(--border-size) solid transparent;
+        border-radius: calc(var(--radius) * 1px);
+        -webkit-mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+                mask: linear-gradient(transparent, transparent), linear-gradient(white, white);
+        -webkit-mask-clip: padding-box, border-box;
+                mask-clip: padding-box, border-box;
+        -webkit-mask-composite: xor;
+                mask-composite: intersect;
+      }
+      .fc-spotlight::before {
+        background-image: radial-gradient(
+          calc(var(--spotlight-size) * 0.8) calc(var(--spotlight-size) * 0.8) at var(--x, -999px) var(--y, -999px),
+          hsl(var(--hue) 80% 65% / 1), transparent 100%
+        );
+        filter: brightness(2);
+      }
+      .fc-spotlight::after {
+        background-image: radial-gradient(
+          calc(var(--spotlight-size) * 0.5) calc(var(--spotlight-size) * 0.5) at var(--x, -999px) var(--y, -999px),
+          hsl(0 0% 100% / 0.65), transparent 100%
+        );
+      }
+
       /* ── Playlist showcase ──────────────────────────────── */
       .showcase-row {
         display: grid;
@@ -415,8 +464,9 @@
 
       <div class="grid md:grid-cols-2 gap-5">
 
-        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
-          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
+        <!-- Card 1 — Gold -->
+        <div class="group fc-spotlight p-8 reveal" style="--base:40; --spread:50;">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-colors" style="background:rgba(201,165,90,0.10);">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>
             </svg>
@@ -425,9 +475,10 @@
           <p class="font-sans text-sm text-vellum/55 leading-relaxed">Curate collections by theme, mood, or season of life. A playlist for grief. One for morning. One to share with someone you love.</p>
         </div>
 
-        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-1" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
-          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Card 2 — Amethyst -->
+        <div class="group fc-spotlight p-8 reveal reveal-delay-1" style="--base:265; --spread:50;">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-colors" style="background:rgba(139,105,200,0.10);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#8B69C8" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
               <path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/>
             </svg>
@@ -436,9 +487,10 @@
           <p class="font-sans text-sm text-vellum/55 leading-relaxed">Every verse is read with care. Let Scripture wash over you while you commute, rest, or begin your morning.</p>
         </div>
 
-        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-2" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
-          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Card 3 — Sage -->
+        <div class="group fc-spotlight p-8 reveal reveal-delay-2" style="--base:170; --spread:50;">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-colors" style="background:rgba(90,163,150,0.10);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#5AA396" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
             </svg>
           </div>
@@ -446,9 +498,10 @@
           <p class="font-sans text-sm text-vellum/55 leading-relaxed">Heart the verses that speak to you. They gather in your saved collection, always ready when you return.</p>
         </div>
 
-        <div class="group bg-surface/40 border border-vellum/[0.06] rounded-2xl p-8 hover:border-gold/20 hover:bg-surface/70 transition-all duration-500 reveal reveal-delay-3" style="box-shadow: inset 3px 0 0 rgba(201,165,90,0.18);">
-          <div class="w-11 h-11 bg-gold/10 rounded-xl flex items-center justify-center mb-6 group-hover:bg-gold/18 transition-colors">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C9A55A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <!-- Card 4 — Ember/Amber -->
+        <div class="group fc-spotlight p-8 reveal reveal-delay-3" style="--base:24; --spread:40;">
+          <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-6 transition-colors" style="background:rgba(160,82,45,0.10);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8783C" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
               <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
             </svg>
@@ -938,6 +991,22 @@
   </script>
 
   <script>
+    // ── Feature card spotlight tracking ──────────────────────
+    (function () {
+      document.querySelectorAll('.fc-spotlight').forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty('--x',  (e.clientX - r.left) + 'px');
+          card.style.setProperty('--y',  (e.clientY - r.top)  + 'px');
+          card.style.setProperty('--xp', ((e.clientX - r.left) / r.width).toFixed(3));
+        });
+        card.addEventListener('pointerleave', () => {
+          card.style.setProperty('--x', '-999px');
+          card.style.setProperty('--y', '-999px');
+        });
+      });
+    })();
+
     // ── Hero headline: Hebrew → English descramble after 2s ──
     (function () {
       const CHARS = 'אבגדהוזחטיכלמנסעפצקרשתABCDEFGHIJKLMNOPQRSTUVWXYZ';
