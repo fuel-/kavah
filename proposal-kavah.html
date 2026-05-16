@@ -20,6 +20,8 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'DM Sans', system-ui, sans-serif;
       background: var(--bg);
@@ -302,6 +304,64 @@
     }
     .guarantee-callout strong { display: block; margin-bottom: 6px; }
 
+    /* ── Table of Contents (sticky sidebar) ── */
+    .toc {
+      position: fixed;
+      top: 50%;
+      right: 24px;
+      transform: translateY(-50%);
+      width: 172px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      z-index: 50;
+      display: none;
+    }
+    @media (min-width: 1320px) {
+      .toc { display: block; }
+    }
+    .toc-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .toc-grid {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+    }
+    .toc-grid li { margin: 0; }
+    .toc-grid a {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      padding: 4px 0 4px 12px;
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.45;
+      transition: color 0.15s;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+    }
+    .toc-grid a:hover { color: var(--text); }
+    .toc-grid a.active {
+      color: var(--gold-dark);
+      border-left-color: var(--gold-dark);
+      font-weight: 500;
+    }
+    .toc-num {
+      font-size: 0.62rem;
+      opacity: 0.55;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -335,13 +395,31 @@
     <div class="subtitle">Phase 1 &nbsp;&middot;&nbsp; Web App</div>
   </div>
 
-  <h2>What We&rsquo;re Building</h2>
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-label">Contents</div>
+    <ol class="toc-grid">
+      <li><span class="toc-num">01</span><a href="#what-were-building">What We're Building</a></li>
+      <li><span class="toc-num">02</span><a href="#phase-1-feature-set">Phase 1 Feature Set</a></li>
+      <li><span class="toc-num">03</span><a href="#brand-design">Brand &amp; Design</a></li>
+      <li><span class="toc-num">04</span><a href="#tech-stack">Recommended Tech Stack</a></li>
+      <li><span class="toc-num">05</span><a href="#system-architecture">System Architecture</a></li>
+      <li><span class="toc-num">06</span><a href="#how-key-pieces-work">How the Key Pieces Work</a></li>
+      <li><span class="toc-num">07</span><a href="#audio-flow">Audio Flow</a></li>
+      <li><span class="toc-num">08</span><a href="#cms-audio-flow">CMS &mdash; Audio Generation Flow</a></li>
+      <li><span class="toc-num">09</span><a href="#milestone-payment">Milestone Payment Structure</a></li>
+      <li><span class="toc-num">10</span><a href="#what-drives-estimate">What Drives the Estimate</a></li>
+      <li><span class="toc-num">11</span><a href="#out-of-scope">What's Not in Phase 1 Scope</a></li>
+      <li><span class="toc-num">12</span><a href="#next-steps">Next Steps</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="what-were-building">What We&rsquo;re Building</h2>
   <p>Kavah is a curated audio scripture experience &mdash; not a Bible app, not a devotional app. Think of it like a faith-based music streaming platform: users open the app and scripture begins playing immediately, with a warm AI voice reading hand-selected NKJV verses organized into thematic playlists. The team curates which verses surface, creating an intentional, immersive experience that feels personal rather than encyclopedic.</p>
   <p>Phase 1 is a free, mobile-first web app that launches quickly, builds the user base, and establishes the API foundation before the Phase 2 native iOS and Android app.</p>
 
   <hr>
 
-  <h2>Phase 1 Feature Set</h2>
+  <h2 id="phase-1-feature-set">Phase 1 Feature Set</h2>
 
   <div class="feature-group">
     <strong>Immersive Audio Player</strong>
@@ -395,7 +473,7 @@
 
   <hr>
 
-  <h2>Brand &amp; Design</h2>
+  <h2 id="brand-design">Brand &amp; Design</h2>
   <p>We&rsquo;ll build the UI from scratch, aligned to the established brand identity. All screens are designed and client-approved before development begins.</p>
 
   <table>
@@ -431,7 +509,7 @@
 
   <hr>
 
-  <h2>Recommended Tech Stack</h2>
+  <h2 id="tech-stack">Recommended Tech Stack</h2>
   <table>
     <thead><tr><th>Component</th><th>Technology</th><th>Why We Chose It</th></tr></thead>
     <tbody>
@@ -454,7 +532,7 @@
 
   <hr>
 
-  <h2>System Architecture</h2>
+  <h2 id="system-architecture">System Architecture</h2>
   <p>Two focused views &mdash; user-facing and admin/services.</p>
 
   <h3>User &amp; Playback</h3>
@@ -502,7 +580,7 @@ graph TB
 
   <hr>
 
-  <h2>How the Key Pieces Work</h2>
+  <h2 id="how-key-pieces-work">How the Key Pieces Work</h2>
 
   <h3>The Player Experience</h3>
   <p>Users land on the home screen and audio begins immediately &mdash; no tapping required. The verse text is displayed in Lora Italic while ElevenLabs&rsquo; warm voice reads it aloud. Controls let them repeat a verse for memorization, skip forward, or shuffle through the playlist. Categories let them filter by what they need in the moment.</p>
@@ -527,7 +605,7 @@ graph TB
 
   <hr>
 
-  <h2>Audio Flow</h2>
+  <h2 id="audio-flow">Audio Flow</h2>
   <div class="diagram-wrap">
     <div class="mermaid">
 sequenceDiagram
@@ -549,7 +627,7 @@ sequenceDiagram
     </div>
   </div>
 
-  <h2>CMS &mdash; Audio Generation Flow</h2>
+  <h2 id="cms-audio-flow">CMS &mdash; Audio Generation Flow</h2>
   <div class="diagram-wrap">
     <div class="mermaid">
 sequenceDiagram
@@ -569,7 +647,7 @@ sequenceDiagram
 
   <hr>
 
-  <h2>Milestone Payment Structure</h2>
+  <h2 id="milestone-payment">Milestone Payment Structure</h2>
   <p>This engagement is <strong>fixed-price with milestone-based payments</strong>. No hourly billing.</p>
 
   <table>
@@ -588,7 +666,7 @@ sequenceDiagram
     Scope changes require a written change order with an agreed price before work begins. Full source code and IP transfers to the client upon final payment.
   </div>
 
-  <h2>What Drives the Estimate</h2>
+  <h2 id="what-drives-estimate">What Drives the Estimate</h2>
   <p>This is a production app built from scratch &mdash; not a template swap or off-the-shelf product. Every piece below is custom work, designed and delivered to spec. Here&rsquo;s what&rsquo;s actually included in each line item.</p>
 
   <div class="breakdown-list">
@@ -799,7 +877,7 @@ sequenceDiagram
 
   <hr>
 
-  <h2>What&rsquo;s Not in Phase 1 Scope</h2>
+  <h2 id="out-of-scope">What&rsquo;s Not in Phase 1 Scope</h2>
   <p>The following are Phase 2 items, explicitly out of scope for this engagement:</p>
   <ul>
     <li>Native iOS and Android apps (React Native)</li>
@@ -814,7 +892,7 @@ sequenceDiagram
 
   <hr>
 
-  <h2>Next Steps</h2>
+  <h2 id="next-steps">Next Steps</h2>
   <ol>
     <li><strong>Review &amp; feedback</strong> &mdash; share any adjustments to scope, features, or priorities before we finalize</li>
     <li><strong>Design kickoff</strong> &mdash; align on user flows, screen inventory, and any brand nuances before screens are designed</li>
@@ -898,6 +976,23 @@ sequenceDiagram
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Scroll-spy TOC
+  (function () {
+    const headings = Array.from(document.querySelectorAll('h2[id]'));
+    const tocLinks = document.querySelectorAll('.toc-grid a');
+    function setActive() {
+      const scrollY = window.scrollY + 80;
+      let current = headings[0] ? headings[0].id : '';
+      headings.forEach(h => { if (h.offsetTop <= scrollY) current = h.id; });
+      tocLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', setActive, { passive: true });
+    window.addEventListener('DOMContentLoaded', setActive);
+    setActive();
+  })();
 </script>
 </body>
 </html>

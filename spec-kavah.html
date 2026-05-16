@@ -22,6 +22,8 @@
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'DM Sans', system-ui, sans-serif;
       background: var(--bg);
@@ -243,6 +245,64 @@
     .doc-nav-link.active { color: var(--gold-dark); }
     .doc-nav-sep { color: rgba(246,244,240,0.18); font-size: 0.85rem; }
 
+    /* ── Table of Contents (sticky sidebar) ── */
+    .toc {
+      position: fixed;
+      top: 50%;
+      right: 24px;
+      transform: translateY(-50%);
+      width: 172px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      z-index: 50;
+      display: none;
+    }
+    @media (min-width: 1320px) {
+      .toc { display: block; }
+    }
+    .toc-label {
+      font-size: 0.65rem;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+    .toc-grid {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      border-left: 1px solid var(--border);
+    }
+    .toc-grid li { margin: 0; }
+    .toc-grid a {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      padding: 4px 0 4px 12px;
+      font-size: 0.74rem;
+      color: var(--muted);
+      text-decoration: none;
+      line-height: 1.45;
+      transition: color 0.15s;
+      border-left: 2px solid transparent;
+      margin-left: -1px;
+    }
+    .toc-grid a:hover { color: var(--text); }
+    .toc-grid a.active {
+      color: var(--gold-dark);
+      border-left-color: var(--gold-dark);
+      font-weight: 500;
+    }
+    .toc-num {
+      font-size: 0.62rem;
+      opacity: 0.55;
+      flex-shrink: 0;
+      font-variant-numeric: tabular-nums;
+    }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -276,8 +336,24 @@
     <div class="subtitle">Phase 1 &nbsp;&middot;&nbsp; Web App</div>
   </div>
 
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-label">Contents</div>
+    <ol class="toc-grid">
+      <li><span class="toc-num">01</span><a href="#stack-overview">Stack Overview</a></li>
+      <li><span class="toc-num">02</span><a href="#api-design">API Design</a></li>
+      <li><span class="toc-num">03</span><a href="#database-schema">Database Schema</a></li>
+      <li><span class="toc-num">04</span><a href="#audio-architecture">Audio Architecture</a></li>
+      <li><span class="toc-num">05</span><a href="#cms-architecture">CMS Architecture</a></li>
+      <li><span class="toc-num">06</span><a href="#phase-2-considerations">Phase 2 Considerations</a></li>
+      <li><span class="toc-num">07</span><a href="#security">Security</a></li>
+      <li><span class="toc-num">08</span><a href="#deployment">Deployment Architecture</a></li>
+      <li><span class="toc-num">09</span><a href="#cicd">CI/CD Pipeline</a></li>
+      <li><span class="toc-num">10</span><a href="#open-questions">Open Questions</a></li>
+    </ol>
+  </nav>
+
   <!-- ── Stack Overview ── -->
-  <h2>Stack Overview</h2>
+  <h2 id="stack-overview">Stack Overview</h2>
   <table>
     <thead><tr><th>Layer</th><th>Technology</th><th>Notes</th></tr></thead>
     <tbody>
@@ -302,7 +378,7 @@
   <hr>
 
   <!-- ── API Design ── -->
-  <h2>API Design</h2>
+  <h2 id="api-design">API Design</h2>
 
   <h3>Base URL</h3>
   <p><code>https://api.kavah.app/v1</code></p>
@@ -344,7 +420,7 @@ Timestamps: RFC3339 UTC</pre>
   <hr>
 
   <!-- ── Database Schema ── -->
-  <h2>Database Schema</h2>
+  <h2 id="database-schema">Database Schema</h2>
   <p>Three focused diagrams &mdash; users &amp; auth, content, and analytics.</p>
 
   <h3>Users &amp; Auth</h3>
@@ -487,7 +563,7 @@ erDiagram
   <hr>
 
   <!-- ── Audio Architecture ── -->
-  <h2>Audio Architecture</h2>
+  <h2 id="audio-architecture">Audio Architecture</h2>
 
   <h3>Generation Pipeline (CMS &rarr; ElevenLabs &rarr; S3)</h3>
   <div class="diagram-wrap">
@@ -538,7 +614,7 @@ playlists/{playlist_id}/cover.jpg    ← playlist artwork</pre>
   <hr>
 
   <!-- ── CMS Architecture ── -->
-  <h2>CMS Architecture</h2>
+  <h2 id="cms-architecture">CMS Architecture</h2>
   <p>The admin CMS is a route group (<code>/admin/*</code>) within the same Go binary. Protected by a separate admin session, never exposed to public users.</p>
 
   <h3>CMS Screens</h3>
@@ -566,7 +642,7 @@ playlists/{playlist_id}/cover.jpg    ← playlist artwork</pre>
   <hr>
 
   <!-- ── Phase 2 Readiness ── -->
-  <h2>Phase 2 Architecture Considerations</h2>
+  <h2 id="phase-2-considerations">Phase 2 Architecture Considerations</h2>
   <p>Phase 1 backend is designed to carry forward into the Phase 2 native app without rebuilding. Decisions baked in now:</p>
   <ul>
     <li>REST API is versioned (<code>/v1/</code>) &mdash; Phase 2 React Native app consumes the same endpoints</li>
@@ -579,7 +655,7 @@ playlists/{playlist_id}/cover.jpg    ← playlist artwork</pre>
   <hr>
 
   <!-- ── Security ── -->
-  <h2>Security</h2>
+  <h2 id="security">Security</h2>
 
   <h3>Authentication</h3>
   <ul>
@@ -619,7 +695,7 @@ playlists/{playlist_id}/cover.jpg    ← playlist artwork</pre>
   <hr>
 
   <!-- ── Deployment ── -->
-  <h2>Deployment Architecture</h2>
+  <h2 id="deployment">Deployment Architecture</h2>
   <div class="diagram-wrap">
     <div class="mermaid">
 graph TB
@@ -688,7 +764,7 @@ graph TB
   <hr>
 
   <!-- ── CI/CD ── -->
-  <h2>CI/CD Pipeline</h2>
+  <h2 id="cicd">CI/CD Pipeline</h2>
   <pre class="code-block">Push to main:
   1. go test ./...
   2. govulncheck ./...
@@ -701,7 +777,7 @@ Feature branches: run tests only. No deploy.</pre>
   <hr>
 
   <!-- ── Open Questions ── -->
-  <h2>Open Questions</h2>
+  <h2 id="open-questions">Open Questions</h2>
   <p>These items need client resolution before or during development:</p>
   <div class="open-questions">
     <ol>
@@ -794,6 +870,23 @@ Feature branches: run tests only. No deploy.</pre>
   closeBtn.addEventListener('click', closeModal);
   modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // Scroll-spy TOC
+  (function () {
+    const headings = Array.from(document.querySelectorAll('h2[id]'));
+    const tocLinks = document.querySelectorAll('.toc-grid a');
+    function setActive() {
+      const scrollY = window.scrollY + 80;
+      let current = headings[0] ? headings[0].id : '';
+      headings.forEach(h => { if (h.offsetTop <= scrollY) current = h.id; });
+      tocLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', setActive, { passive: true });
+    window.addEventListener('DOMContentLoaded', setActive);
+    setActive();
+  })();
 </script>
 </body>
 </html>
