@@ -362,6 +362,92 @@
       font-variant-numeric: tabular-nums;
     }
 
+    /* ── TOC mobile trigger button ── */
+    #toc-trigger {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 180;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--text);
+      color: var(--gold-dark);
+      border: none;
+      border-radius: 100px;
+      padding: 10px 18px 10px 14px;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.03em;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(34,34,34,0.3);
+      transition: background 0.15s, box-shadow 0.15s;
+    }
+    #toc-trigger:hover {
+      background: #2e2b27;
+      box-shadow: 0 6px 24px rgba(34,34,34,0.38);
+    }
+    @media (min-width: 1320px) { #toc-trigger { display: none; } }
+
+    /* ── TOC backdrop ── */
+    #toc-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(34,34,34,0.45);
+      z-index: 190;
+    }
+    #toc-backdrop.active { display: block; }
+
+    /* ── TOC mobile sheet overrides ── */
+    .toc-handle { display: none; }
+    @media (max-width: 1319px) {
+      .toc {
+        display: block;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        transform: translateY(100%);
+        width: 100%;
+        max-height: 72vh;
+        background: var(--bg);
+        border-top: 2px solid var(--gold-dark);
+        border-radius: 16px 16px 0 0;
+        padding: 0 24px 40px;
+        box-shadow: 0 -8px 40px rgba(34,34,34,0.15);
+        transition: transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+        overflow-y: auto;
+        overscroll-behavior: contain;
+        z-index: 200;
+      }
+      .toc.open { transform: translateY(0); }
+      .toc-handle {
+        display: block;
+        width: 36px;
+        height: 4px;
+        background: var(--border);
+        border-radius: 2px;
+        margin: 16px auto 20px;
+      }
+      .toc-label { font-size: 0.7rem; margin-bottom: 16px; }
+      .toc-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px 16px;
+        border-left: none;
+      }
+      .toc-grid a {
+        border-left: none;
+        margin-left: 0;
+        padding: 9px 4px;
+        font-size: 0.85rem;
+        color: var(--text);
+      }
+      .toc-grid a.active { color: var(--gold-dark); font-weight: 500; }
+    }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -396,6 +482,7 @@
   </div>
 
   <nav class="toc" aria-label="Table of contents">
+    <div class="toc-handle" aria-hidden="true"></div>
     <div class="toc-label">Contents</div>
     <ol class="toc-grid">
       <li><span class="toc-num">01</span><a href="#what-were-building">What We're Building</a></li>
@@ -902,6 +989,16 @@ sequenceDiagram
 
 </div>
 
+<button id="toc-trigger" aria-label="Table of contents" aria-expanded="false">
+  <svg width="14" height="12" viewBox="0 0 14 12" fill="none" aria-hidden="true">
+    <rect y="0" width="14" height="1.75" rx="0.875" fill="currentColor"/>
+    <rect y="5.125" width="10" height="1.75" rx="0.875" fill="currentColor"/>
+    <rect y="10.25" width="12" height="1.75" rx="0.875" fill="currentColor"/>
+  </svg>
+  Contents
+</button>
+<div id="toc-backdrop"></div>
+
 <!-- ── Lightbox modal ── -->
 <div id="diagram-modal" role="dialog" aria-modal="true" aria-label="Enlarged diagram">
   <div id="modal-inner">
@@ -992,6 +1089,35 @@ sequenceDiagram
     window.addEventListener('scroll', setActive, { passive: true });
     window.addEventListener('DOMContentLoaded', setActive);
     setActive();
+  })();
+
+  // Mobile TOC drawer
+  (function () {
+    const trigger  = document.getElementById('toc-trigger');
+    const backdrop = document.getElementById('toc-backdrop');
+    const panel    = document.querySelector('.toc');
+    if (!trigger || !panel) return;
+
+    function openSheet() {
+      panel.classList.add('open');
+      backdrop.classList.add('active');
+      trigger.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeSheet() {
+      panel.classList.remove('open');
+      backdrop.classList.remove('active');
+      trigger.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
+    trigger.addEventListener('click', () =>
+      panel.classList.contains('open') ? closeSheet() : openSheet()
+    );
+    backdrop.addEventListener('click', closeSheet);
+    panel.querySelectorAll('.toc-grid a').forEach(a =>
+      a.addEventListener('click', closeSheet)
+    );
   })();
 </script>
 </body>
