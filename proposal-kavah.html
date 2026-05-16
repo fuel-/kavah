@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kavah — Project Proposal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Lora:ital@1&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg:         #F6F4F0;
+      --text:       #222222;
+      --gold-light: #C9963A;
+      --gold-dark:  #D4A44C;
+      --white:      #ffffff;
+      --border:     #e0dbd0;
+      --muted:      #7a7062;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .page {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 64px 56px 80px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      padding-bottom: 36px;
+      margin-bottom: 52px;
+      border-bottom: 2px solid var(--gold-dark);
+    }
+    .doc-header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .doc-header .subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Headings ── */
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 56px;
+      margin-bottom: 18px;
+      padding-left: 14px;
+      border-left: 3px solid var(--gold-dark);
+    }
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold-light);
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    p { margin-bottom: 14px; }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── Lists ── */
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 5px; }
+
+    .feature-group { margin-bottom: 22px; }
+    .feature-group > strong { display: block; font-weight: 600; margin-bottom: 6px; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; margin: 18px 0 28px; font-size: 0.9rem; }
+    thead tr { background: var(--gold-dark); }
+    thead th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--white); }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:nth-child(even) { background: rgba(201,150,58,0.05); }
+    tbody td { padding: 10px 14px; vertical-align: top; }
+    tr.total-row { background: rgba(212,164,76,0.12) !important; }
+    tr.total-row td { font-weight: 600; }
+
+    /* ── Code ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82em;
+      background: rgba(34,34,34,0.08);
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    /* ── ASCII layout ── */
+    pre.layout {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 22px 26px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      overflow-x: auto;
+      margin: 14px 0 24px;
+    }
+
+    /* ── Diagram cards ── */
+    .diagram-wrap {
+      position: relative;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px 24px 44px;
+      margin: 16px 0 28px;
+      text-align: center;
+      overflow-x: auto;
+      cursor: zoom-in;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .diagram-wrap:hover {
+      box-shadow: 0 4px 20px rgba(212,164,76,0.18);
+      border-color: var(--gold-light);
+    }
+    .diagram-wrap::after {
+      content: '⊕  click to enlarge';
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .mermaid { display: inline-block; max-width: 100%; }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--white);
+      border-left: 3px solid var(--gold-light);
+      border-radius: 0 8px 8px 0;
+      padding: 16px 20px;
+      margin: 16px 0 24px;
+      font-size: 0.92rem;
+    }
+
+    em { color: var(--muted); }
+    strong { font-weight: 600; }
+
+    /* ── Lightbox modal ── */
+    #diagram-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(34,34,34,0.9);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    #diagram-modal.active { display: flex; }
+
+    #modal-inner {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px 52px 40px;
+      max-width: 92vw;
+      max-height: 92vh;
+      overflow: auto;
+      cursor: default;
+      position: relative;
+    }
+    #modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+    }
+    #modal-close:hover { color: var(--text); }
+    #modal-svg-container {
+      width: min(80vw, 1100px);
+      max-height: 84vh;
+      overflow: auto;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; font-size: 13px; }
+      .page { padding: 28px 36px; }
+      h2 { page-break-after: avoid; margin-top: 36px; }
+      h3 { page-break-after: avoid; }
+      .diagram-wrap { page-break-inside: avoid; cursor: default; }
+      .diagram-wrap::after { display: none; }
+      table { page-break-inside: avoid; }
+      #diagram-modal { display: none !important; }
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <h1>Kavah &mdash; Project Proposal</h1>
+    <div class="subtitle">Phase 1 &nbsp;&middot;&nbsp; Web App</div>
+  </div>
+
+  <h2>What We&rsquo;re Building</h2>
+  <p>Kavah is a curated audio scripture experience &mdash; not a Bible app, not a devotional app. Think of it like a faith-based music streaming platform: users open the app and scripture begins playing immediately, with a warm AI voice reading hand-selected NKJV verses organized into thematic playlists. The team curates which verses surface, creating an intentional, immersive experience that feels personal rather than encyclopedic.</p>
+  <p>Phase 1 is a free, mobile-first web app that launches quickly, builds the user base, and establishes the API foundation before the Phase 2 native iOS and Android app.</p>
+
+  <hr>
+
+  <h2>Phase 1 Feature Set</h2>
+
+  <div class="feature-group">
+    <strong>Immersive Audio Player</strong>
+    <ul>
+      <li>Auto-play on open &mdash; scripture starts immediately, no setup required</li>
+      <li>Full verse text displayed on screen while audio plays (hear and read simultaneously)</li>
+      <li>Player controls: play, pause, next, previous, shuffle, repeat (single-verse loop for memorization)</li>
+      <li>Warm, natural AI voice via ElevenLabs TTS</li>
+    </ul>
+  </div>
+
+  <div class="feature-group">
+    <strong>Curated Content</strong>
+    <ul>
+      <li>NKJV scripture via licensed Bible API &mdash; team curates which verses surface</li>
+      <li>Verses tagged by theme (peace, faith, healing, love, strength, and more)</li>
+      <li>Category filtering so users find what they need</li>
+    </ul>
+  </div>
+
+  <div class="feature-group">
+    <strong>Discovery</strong>
+    <ul>
+      <li>Search by verse reference or keyword within the curated library</li>
+    </ul>
+  </div>
+
+  <div class="feature-group">
+    <strong>Accounts &amp; Community Building</strong>
+    <ul>
+      <li>Email / magic link authentication &mdash; no password required</li>
+      <li>Email capture: waitlist prompt for the upcoming native app, building the launch list</li>
+      <li>&ldquo;Get the App&rdquo; persistent CTA promoting the Phase 2 native experience</li>
+      <li>Optional donation feature for users who want to support the app</li>
+    </ul>
+  </div>
+
+  <div class="feature-group">
+    <strong>Analytics</strong>
+    <ul>
+      <li>Play counts, listen duration, popular categories and verses (internal dashboard)</li>
+    </ul>
+  </div>
+
+  <div class="feature-group">
+    <strong>Content Management (Admin)</strong>
+    <ul>
+      <li>Simplified CMS for the team: verse entry, ElevenLabs audio generation or manual upload, category tagging, publish / unpublish</li>
+    </ul>
+  </div>
+
+  <hr>
+
+  <h2>Brand &amp; Design</h2>
+  <p>We&rsquo;ll build the UI from scratch, aligned to the established brand identity. All screens are designed and client-approved before development begins.</p>
+
+  <table>
+    <thead><tr><th>Element</th><th>Spec</th></tr></thead>
+    <tbody>
+      <tr><td>Primary Background</td><td><code>#F6F4F0</code> &nbsp;Warm Off-White</td></tr>
+      <tr><td>Primary Text / Logo</td><td><code>#222222</code> &nbsp;Dark Charcoal</td></tr>
+      <tr><td>Accents / Active States</td><td><code>#C9963A</code> &nbsp;Gold Light</td></tr>
+      <tr><td>Buttons / Controls</td><td><code>#D4A44C</code> &nbsp;Gold Dark</td></tr>
+      <tr><td>Logo / Brand Font</td><td>Radnika Next</td></tr>
+      <tr><td>UI Font</td><td>DM Sans</td></tr>
+      <tr><td>Scripture / Verse Font</td><td>Lora Italic</td></tr>
+      <tr><td>Aesthetic</td><td>Warm, peaceful, minimal &mdash; premium feel. Light mode. Gold accents used sparingly.</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Home Screen Layout</h3>
+  <pre class="layout">┌──────────────────────────────┐
+│  Logo            ☰           │  ← Radnika Next logo + hamburger
+│                              │
+│  NOW PLAYING                 │  ← Gold label (DM Sans)
+│                              │
+│  "For I know the plans I     │  ← Lora Italic, large, centered
+│   have for you, declares     │
+│   the Lord..."               │
+│                              │
+│  Jeremiah 29:11              │  ← Gold, DM Sans
+│                              │
+│  ⏮  ⏸  ⏭   🔀  🔁         │  ← Pinned above nav
+├──────────────────────────────┤
+│  Home  Browse  Search  Acct  │  ← Bottom navigation
+└──────────────────────────────┘</pre>
+
+  <hr>
+
+  <h2>Recommended Tech Stack</h2>
+  <table>
+    <thead><tr><th>Component</th><th>Technology</th><th>Why We Chose It</th></tr></thead>
+    <tbody>
+      <tr><td>Backend API</td><td>Go</td><td>Fast, lean, handles concurrency well &mdash; built for the long run</td></tr>
+      <tr><td>Web Frontend</td><td>Go Templates + HTMX + Alpine.js</td><td>Server-rendered, PWA-capable, no heavy JS framework</td></tr>
+      <tr><td>Admin CMS</td><td>Go Templates + HTMX</td><td>Same codebase as frontend &mdash; no extra framework</td></tr>
+      <tr><td>Database</td><td>PostgreSQL</td><td>Relational, ACID-compliant, great for content + users</td></tr>
+      <tr><td>Cache</td><td>Redis</td><td>Sessions, rate limiting, API response caching</td></tr>
+      <tr><td>AI Voice</td><td>ElevenLabs TTS</td><td>Client-specified &mdash; warm, natural-quality NKJV audio</td></tr>
+      <tr><td>Audio Storage</td><td>AWS S3</td><td>Reliable, cheap at scale</td></tr>
+      <tr><td>Audio Delivery</td><td>AWS CloudFront</td><td>CDN-backed streaming &mdash; smooth on any connection</td></tr>
+      <tr><td>Bible Content</td><td>NKJV Licensed API</td><td>Full NKJV in backend; team curates what surfaces</td></tr>
+      <tr><td>Auth</td><td>Magic Link (email)</td><td>Passwordless &mdash; smooth UX, secure, no credential storage</td></tr>
+      <tr><td>Email</td><td>SendGrid</td><td>Magic links, waitlist emails, notifications</td></tr>
+      <tr><td>Donations</td><td>Stripe</td><td>Trusted payment processing, easy integration</td></tr>
+      <tr><td>Analytics</td><td>PostHog</td><td>Privacy-respecting, self-hostable, strong funnel analysis</td></tr>
+      <tr><td>Deployment</td><td>DigitalOcean</td><td>Cost-effective at Phase 1 scale, AWS-ready architecture</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>System Architecture</h2>
+  <p>Two focused views &mdash; user-facing and admin/services.</p>
+
+  <h3>User &amp; Playback</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+graph TB
+    User["User\nMobile Browser"]
+    API["Go API Server\n(Web App + REST)"]
+    DB[("PostgreSQL\nVerses · Users · Playlists")]
+    Redis[("Redis\nSessions · Cache")]
+    CDN["CloudFront CDN\nAudio Streaming"]
+    BibleAPI["NKJV Bible API\nLicensed Scripture Data"]
+
+    User --> API
+    User --> CDN
+    API --> DB
+    API --> Redis
+    API --> BibleAPI
+    </div>
+  </div>
+
+  <h3>Admin &amp; Services</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+graph TB
+    Admin["Admin Team\nCMS Browser"]
+    API["Go API Server\n(CMS)"]
+    EL["ElevenLabs API\nTTS Audio Generation"]
+    S3["AWS S3\nGenerated Audio Files"]
+    CDN["CloudFront CDN\nAudio Streaming"]
+    SendGrid["SendGrid\nMagic Links · Email"]
+    Stripe["Stripe\nDonations"]
+    PostHog["PostHog\nAnalytics"]
+
+    Admin --> API
+    API --> EL
+    EL --> S3
+    API --> S3
+    S3 --> CDN
+    API --> SendGrid
+    API --> Stripe
+    API --> PostHog
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>How the Key Pieces Work</h2>
+
+  <h3>The Player Experience</h3>
+  <p>Users land on the home screen and audio begins immediately &mdash; no tapping required. The verse text is displayed in Lora Italic while ElevenLabs&rsquo; warm voice reads it aloud. Controls let them repeat a verse for memorization, skip forward, or shuffle through the playlist. Categories let them filter by what they need in the moment.</p>
+
+  <h3>Curated Content &mdash; Not a Bible Browser</h3>
+  <p>The full NKJV lives in the backend. The team uses the CMS to hand-select which verses surface to users, generate audio for each one via ElevenLabs, tag categories, and publish. Users only ever see the curated library &mdash; intentional, not encyclopedic.</p>
+
+  <h3>The Admin CMS</h3>
+  <p>A clean internal interface gives the team full control: browse the NKJV, select a verse, generate audio with one click, preview the result, tag categories, set position in playlists, and publish. Audio can also be manually uploaded if preferred. No engineering required for content updates.</p>
+
+  <h3>How Users Sign In</h3>
+  <p>Magic link authentication &mdash; users enter their email, receive a secure sign-in link, and they&rsquo;re in. No password to forget, no friction. Sessions persist comfortably so users aren&rsquo;t re-prompted constantly.</p>
+
+  <h3>Building the Native App Audience</h3>
+  <p>Phase 1 is the runway for Phase 2. A waitlist capture prompt invites engaged users to join the early list for the native app. A persistent &ldquo;Get the App&rdquo; banner keeps it front of mind. On launch of Phase 2, we have a warm list ready to convert.</p>
+
+  <h3>Donations</h3>
+  <p>An optional giving flow lets users support the app via Stripe. Clean, unobtrusive &mdash; available but not pushed. Donation history is tracked per account when signed in, but guests can donate too.</p>
+
+  <h3>Audio Delivery</h3>
+  <p>Audio files are generated by ElevenLabs and stored in AWS S3. CloudFront delivers them via CDN-based streaming &mdash; smooth playback on any mobile connection, anywhere in the world.</p>
+
+  <hr>
+
+  <h2>Audio Flow</h2>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant App
+    participant API
+    participant CDN
+
+    U->>App: Opens app
+    App->>API: Request current verse
+    API-->>App: Verse text + signed URL
+    App->>CDN: Fetch audio
+    CDN-->>App: Audio stream
+    App-->>U: Verse displays, audio plays
+    U->>App: Taps Next
+    App->>API: Request next verse
+    API-->>App: Next verse + signed URL
+    App->>CDN: Fetch next audio
+    </div>
+  </div>
+
+  <h2>CMS &mdash; Audio Generation Flow</h2>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+sequenceDiagram
+    participant A as Admin
+    participant CMS
+    participant EL as ElevenLabs
+    participant S3
+
+    A->>CMS: Select verse, click Generate
+    CMS->>EL: Send verse text
+    EL-->>CMS: Return audio file
+    CMS->>S3: Upload audio
+    CMS-->>A: Preview URL
+    A->>CMS: Approve, tag, publish
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>Milestone Payment Structure</h2>
+  <p>This engagement is <strong>fixed-price with milestone-based payments</strong>. No hourly billing.</p>
+
+  <table>
+    <thead><tr><th>Milestone</th><th>Description</th><th>Payment</th></tr></thead>
+    <tbody>
+      <tr><td>M1 &mdash; Contract Signing</td><td>Agreement executed, project kickoff</td><td>20% of total</td></tr>
+      <tr><td>M2 &mdash; Design Approval</td><td>All screens designed and client-approved</td><td>25% of total</td></tr>
+      <tr><td>M3 &mdash; Delivery for Review</td><td>Working app delivered for client review and testing</td><td>25% of total</td></tr>
+      <tr><td>M4 &mdash; Live Launch</td><td>App live, any launch issues resolved</td><td>30% of total</td></tr>
+    </tbody>
+  </table>
+
+  <p style="font-size:1.05rem;"><strong>Estimated Total: $32,000 &ndash; $42,000</strong></p>
+
+  <div class="callout">
+    Scope changes require a written change order with an agreed price before work begins. Full source code and IP transfers to the client upon final payment.
+  </div>
+
+  <h3>Estimated Hours Breakdown</h3>
+  <p><em>For transparency &mdash; billing is fixed-price, not hourly.</em></p>
+  <table>
+    <thead><tr><th>Feature Area</th><th>Estimated Hours</th></tr></thead>
+    <tbody>
+      <tr><td>UI/UX Design (all screens, brand-aligned)</td><td>35&ndash;45 hrs</td></tr>
+      <tr><td>Project Setup &amp; Infrastructure</td><td>15&ndash;20 hrs</td></tr>
+      <tr><td>Magic Link Auth &amp; Sessions</td><td>12&ndash;16 hrs</td></tr>
+      <tr><td>NKJV Bible API Integration</td><td>15&ndash;20 hrs</td></tr>
+      <tr><td>ElevenLabs TTS Integration</td><td>18&ndash;24 hrs</td></tr>
+      <tr><td>Audio CDN (S3 + CloudFront)</td><td>16&ndash;22 hrs</td></tr>
+      <tr><td>Core Player (auto-play, verse display, controls)</td><td>25&ndash;32 hrs</td></tr>
+      <tr><td>Category Filtering &amp; Search</td><td>14&ndash;18 hrs</td></tr>
+      <tr><td>Admin CMS (verse, audio, tags, publish)</td><td>35&ndash;45 hrs</td></tr>
+      <tr><td>Email (magic links, waitlist, notifications)</td><td>14&ndash;18 hrs</td></tr>
+      <tr><td>Donations (Stripe)</td><td>16&ndash;20 hrs</td></tr>
+      <tr><td>Analytics (PostHog)</td><td>8&ndash;12 hrs</td></tr>
+      <tr><td>Waitlist Capture &amp; &ldquo;Get the App&rdquo; CTA</td><td>6&ndash;10 hrs</td></tr>
+      <tr><td>Testing &amp; QA</td><td>20&ndash;26 hrs</td></tr>
+      <tr><td>Deployment &amp; Launch Prep</td><td>12&ndash;16 hrs</td></tr>
+      <tr class="total-row"><td>Total</td><td>261&ndash;344 hrs</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <h2>What&rsquo;s Not in Phase 1 Scope</h2>
+  <p>The following are Phase 2 items, explicitly out of scope for this engagement:</p>
+  <ul>
+    <li>Native iOS and Android apps (React Native)</li>
+    <li>Background audio and lock screen controls</li>
+    <li>Note-taking per verse</li>
+    <li>Paid subscription / Apple IAP / Google Play Billing</li>
+    <li>Additional ElevenLabs voices</li>
+    <li>Spanish language support</li>
+    <li>Push notifications</li>
+  </ul>
+  <p>The Phase 1 architecture is designed from day one to carry these forward without rebuilding.</p>
+
+  <hr>
+
+  <h2>Next Steps</h2>
+  <ol>
+    <li><strong>Review &amp; feedback</strong> &mdash; share any adjustments to scope, features, or priorities before we finalize</li>
+    <li><strong>Design kickoff</strong> &mdash; align on user flows, screen inventory, and any brand nuances before screens are designed</li>
+    <li><strong>Contract &amp; Milestone 1 payment</strong> &mdash; execute the agreement to officially begin</li>
+    <li><strong>Sprint planning</strong> &mdash; break the work into clear 2-week sprints with deliverables tied to milestones</li>
+  </ol>
+
+</div>
+
+<!-- ── Lightbox modal ── -->
+<div id="diagram-modal" role="dialog" aria-modal="true" aria-label="Enlarged diagram">
+  <div id="modal-inner">
+    <button id="modal-close" aria-label="Close">&times;</button>
+    <div id="modal-svg-container"></div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+      primaryColor:        '#F6F4F0',
+      primaryTextColor:    '#222222',
+      primaryBorderColor:  '#C9963A',
+      lineColor:           '#7a7062',
+      secondaryColor:      '#ffffff',
+      tertiaryColor:       '#ffffff',
+      background:          '#ffffff',
+      mainBkg:             '#ffffff',
+      nodeBorder:          '#D4A44C',
+      clusterBkg:          '#F6F4F0',
+      titleColor:          '#222222',
+      edgeLabelBackground: '#F6F4F0',
+      fontFamily:          "'DM Sans', system-ui, sans-serif",
+      fontSize:            '14px'
+    }
+  });
+
+  const modal     = document.getElementById('diagram-modal');
+  const container = document.getElementById('modal-svg-container');
+  const closeBtn  = document.getElementById('modal-close');
+
+  function openModal(wrap) {
+    const svg = wrap.querySelector('svg');
+    if (!svg) return;
+    container.innerHTML = '';
+    const clone = svg.cloneNode(true);
+    // Override Mermaid's inline max-width so the clone fills the modal
+    clone.style.maxWidth = 'none';
+    clone.style.width    = '100%';
+    clone.style.height   = 'auto';
+    clone.style.display  = 'block';
+    container.appendChild(clone);
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Attach click handlers only after Mermaid finishes rendering all diagrams
+  window.addEventListener('DOMContentLoaded', () => {
+    mermaid.run({ querySelector: '.mermaid' })
+      .then(() => {
+        document.querySelectorAll('.diagram-wrap').forEach(wrap => {
+          wrap.addEventListener('click', () => openModal(wrap));
+        });
+      })
+      .catch(() => {
+        setTimeout(() => {
+          document.querySelectorAll('.diagram-wrap').forEach(wrap => {
+            wrap.addEventListener('click', () => openModal(wrap));
+          });
+        }, 3000);
+      });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>

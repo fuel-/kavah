@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kavah — Technical Specification</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Lora:ital@1&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg:         #F6F4F0;
+      --text:       #222222;
+      --gold-light: #C9963A;
+      --gold-dark:  #D4A44C;
+      --white:      #ffffff;
+      --border:     #e0dbd0;
+      --muted:      #7a7062;
+      --code-bg:    #1e1b18;
+      --code-text:  #e8e0d4;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.75;
+      font-size: 15px;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 64px 56px 80px;
+    }
+
+    /* ── Header ── */
+    .doc-header {
+      padding-bottom: 36px;
+      margin-bottom: 52px;
+      border-bottom: 2px solid var(--gold-dark);
+    }
+    .doc-header h1 {
+      font-size: 2.2rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      color: var(--text);
+      margin-bottom: 4px;
+    }
+    .doc-header .subtitle {
+      font-size: 0.95rem;
+      color: var(--muted);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    /* ── Headings ── */
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin-top: 56px;
+      margin-bottom: 18px;
+      padding-left: 14px;
+      border-left: 3px solid var(--gold-dark);
+    }
+    h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--gold-light);
+      margin-top: 28px;
+      margin-bottom: 10px;
+    }
+
+    p { margin-bottom: 14px; }
+
+    hr {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 48px 0;
+    }
+
+    /* ── Lists ── */
+    ul, ol { padding-left: 22px; margin-bottom: 14px; }
+    li { margin-bottom: 6px; }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; margin: 18px 0 28px; font-size: 0.88rem; }
+    thead tr { background: var(--gold-dark); }
+    thead th { padding: 10px 14px; text-align: left; font-weight: 600; color: var(--white); }
+    tbody tr { border-bottom: 1px solid var(--border); }
+    tbody tr:nth-child(even) { background: rgba(201,150,58,0.05); }
+    tbody td { padding: 10px 14px; vertical-align: top; }
+
+    /* ── Inline code ── */
+    code {
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82em;
+      background: rgba(34,34,34,0.08);
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
+
+    /* ── Code blocks ── */
+    pre.code-block {
+      background: var(--code-bg);
+      color: var(--code-text);
+      border-radius: 8px;
+      padding: 20px 24px;
+      font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      overflow-x: auto;
+      margin: 14px 0 24px;
+    }
+
+    /* ── Diagram cards ── */
+    .diagram-wrap {
+      position: relative;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px 24px 44px;
+      margin: 16px 0 28px;
+      text-align: center;
+      overflow-x: auto;
+      cursor: zoom-in;
+      transition: box-shadow 0.2s, border-color 0.2s;
+    }
+    .diagram-wrap:hover {
+      box-shadow: 0 4px 20px rgba(212,164,76,0.18);
+      border-color: var(--gold-light);
+    }
+    .diagram-wrap::after {
+      content: '⊕  click to enlarge';
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 0.72rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      opacity: 0.75;
+      pointer-events: none;
+    }
+    .mermaid { display: inline-block; max-width: 100%; }
+
+    /* ── Open questions ── */
+    .open-questions ol { padding-left: 20px; }
+    .open-questions li { margin-bottom: 14px; }
+
+    /* ── Callout ── */
+    .callout {
+      background: var(--white);
+      border-left: 3px solid var(--gold-light);
+      border-radius: 0 8px 8px 0;
+      padding: 14px 18px;
+      margin: 14px 0 22px;
+      font-size: 0.9rem;
+    }
+
+    em { color: var(--muted); }
+    strong { font-weight: 600; }
+
+    /* ── Lightbox modal ── */
+    #diagram-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(34,34,34,0.9);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      cursor: zoom-out;
+    }
+    #diagram-modal.active { display: flex; }
+
+    #modal-inner {
+      background: var(--white);
+      border-radius: 12px;
+      padding: 48px 52px 40px;
+      max-width: 92vw;
+      max-height: 92vh;
+      overflow: auto;
+      cursor: default;
+      position: relative;
+    }
+    #modal-close {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.8rem;
+      line-height: 1;
+      color: var(--muted);
+      cursor: pointer;
+      padding: 0;
+    }
+    #modal-close:hover { color: var(--text); }
+    #modal-svg-container {
+      width: min(80vw, 1100px);
+      max-height: 84vh;
+      overflow: auto;
+    }
+
+    /* ── Print ── */
+    @media print {
+      body { background: white; font-size: 13px; }
+      .page { padding: 28px 36px; }
+      h2 { page-break-after: avoid; margin-top: 36px; }
+      h3 { page-break-after: avoid; }
+      .diagram-wrap { page-break-inside: avoid; cursor: default; }
+      .diagram-wrap::after { display: none; }
+      table { page-break-inside: avoid; }
+      #diagram-modal { display: none !important; }
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <h1>Kavah &mdash; Technical Specification</h1>
+    <div class="subtitle">Phase 1 &nbsp;&middot;&nbsp; Web App</div>
+  </div>
+
+  <!-- ── Stack Overview ── -->
+  <h2>Stack Overview</h2>
+  <table>
+    <thead><tr><th>Layer</th><th>Technology</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>API Server</td><td>Go 1.23+</td><td>Chi router, standard library HTTP</td></tr>
+      <tr><td>Web Frontend</td><td>Go <code>html/template</code> + HTMX + Alpine.js</td><td>SSR, PWA manifest + service worker</td></tr>
+      <tr><td>Admin CMS</td><td>Go <code>html/template</code> + HTMX</td><td>Same binary as frontend, <code>/admin</code> route group</td></tr>
+      <tr><td>Database</td><td>PostgreSQL 16</td><td>Primary data store</td></tr>
+      <tr><td>Cache / Sessions</td><td>Redis</td><td>Magic link token cache, session store, rate limiting</td></tr>
+      <tr><td>Audio Storage</td><td>AWS S3</td><td>Generated and manually uploaded audio files</td></tr>
+      <tr><td>Audio Delivery</td><td>AWS CloudFront</td><td>CDN streaming &mdash; signed URLs (15-min TTL)</td></tr>
+      <tr><td>TTS</td><td>ElevenLabs API</td><td>AI voice generation for verse audio</td></tr>
+      <tr><td>Bible Content</td><td>NKJV Licensed API</td><td>Full NKJV in backend; team curates what surfaces</td></tr>
+      <tr><td>Auth</td><td>Magic Link (email-based)</td><td>Passwordless &mdash; tokens stored as HMAC-SHA256 hashes in Redis</td></tr>
+      <tr><td>Email</td><td>SendGrid</td><td>Magic links, waitlist confirmation, notifications</td></tr>
+      <tr><td>Donations</td><td>Stripe</td><td>Payment intents, webhook handling</td></tr>
+      <tr><td>Analytics</td><td>PostHog</td><td>Event tracking, funnels, play analytics</td></tr>
+      <tr><td>Deployment</td><td>Docker + DigitalOcean</td><td>App Platform or Droplets + managed PG + managed Redis</td></tr>
+      <tr><td>CI/CD</td><td>GitHub Actions</td><td>Build &rarr; test &rarr; deploy pipeline</td></tr>
+    </tbody>
+  </table>
+
+  <hr>
+
+  <!-- ── API Design ── -->
+  <h2>API Design</h2>
+
+  <h3>Base URL</h3>
+  <p><code>https://api.kavah.app/v1</code></p>
+
+  <h3>Auth Strategy</h3>
+  <p><strong>Magic Link Flow:</strong></p>
+  <ol>
+    <li>User submits email &rarr; API generates a secure random token, stores HMAC-SHA256 hash in Redis with 15-min TTL</li>
+    <li>SendGrid sends email with sign-in link containing the raw token</li>
+    <li>User clicks link &rarr; API validates token, issues session cookie (HttpOnly, Secure, SameSite=Lax)</li>
+    <li>Session ID stored in Redis with 30-day TTL, rotated on each use</li>
+  </ol>
+  <br>
+  <p><strong>Admin Auth:</strong> Separate <code>/admin/login</code> with email + password (bcrypt, cost 12). Short-lived session, IP-pinned.</p>
+
+  <h3>Endpoint Groups</h3>
+  <table>
+    <thead><tr><th>Group</th><th>Base Path</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Auth</td><td><code>/auth</code></td><td>Magic link request, verify, logout</td></tr>
+      <tr><td>Player</td><td><code>/player</code></td><td>Current verse, next, previous, queue state</td></tr>
+      <tr><td>Verses</td><td><code>/verses</code></td><td>Browse curated verses, search, category filter</td></tr>
+      <tr><td>Categories</td><td><code>/categories</code></td><td>List available category tags</td></tr>
+      <tr><td>Donations</td><td><code>/donations</code></td><td>Create Stripe payment intent, webhook</td></tr>
+      <tr><td>Waitlist</td><td><code>/waitlist</code></td><td>Email capture for Phase 2 native app</td></tr>
+      <tr><td>Account</td><td><code>/account</code></td><td>Profile, preferences, data export</td></tr>
+      <tr><td>Admin</td><td><code>/admin/*</code></td><td>CMS &mdash; verse management, audio, publishing</td></tr>
+      <tr><td>Analytics</td><td><code>/admin/analytics</code></td><td>Internal play stats dashboard</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Request / Response Pattern</h3>
+  <pre class="code-block">Success: { "data": { ... }, "error": null }
+Error:   { "data": null,  "error": { "code": "not_found", "message": "Verse not found" } }
+
+Pagination: cursor-based  ?cursor=&lt;opaque&gt;&amp;limit=20
+Timestamps: RFC3339 UTC</pre>
+
+  <hr>
+
+  <!-- ── Database Schema ── -->
+  <h2>Database Schema</h2>
+  <p>Three focused diagrams &mdash; users &amp; auth, content, and analytics.</p>
+
+  <h3>Users &amp; Auth</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+erDiagram
+    USER {
+        uuid id PK
+        string email UK
+        string display_name
+        boolean waitlist_opted_in
+        timestamp last_active_at
+        timestamp created_at
+        timestamp deleted_at
+    }
+    SESSION {
+        uuid id PK
+        uuid user_id FK
+        string token_hash UK
+        string ip_address
+        timestamp expires_at
+        timestamp created_at
+    }
+    DONATION {
+        uuid id PK
+        uuid user_id FK
+        integer amount_cents
+        string currency
+        string stripe_payment_intent_id UK
+        string status
+        timestamp created_at
+    }
+    WAITLIST_ENTRY {
+        uuid id PK
+        string email UK
+        string source
+        timestamp created_at
+    }
+    ADMIN_USER {
+        uuid id PK
+        string email UK
+        string password_hash
+        string role
+        timestamp created_at
+    }
+
+    USER ||--o{ SESSION : has
+    USER ||--o{ DONATION : makes
+    </div>
+  </div>
+
+  <h3>Content</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+erDiagram
+    VERSE {
+        uuid id PK
+        string reference UK
+        string book
+        integer chapter
+        integer verse_start
+        integer verse_end
+        text text_nkjv
+        string audio_s3_key
+        integer audio_duration_ms
+        string elevenlabs_job_id
+        boolean is_published
+        integer sort_position
+        timestamp published_at
+        timestamp created_at
+        timestamp updated_at
+    }
+    CATEGORY {
+        uuid id PK
+        string name UK
+        string slug UK
+        string color_hex
+        integer sort_position
+    }
+    VERSE_CATEGORY {
+        uuid verse_id FK
+        uuid category_id FK
+    }
+    CURATED_PLAYLIST {
+        uuid id PK
+        string title
+        string slug UK
+        string description
+        string cover_s3_key
+        boolean is_published
+        integer sort_position
+        timestamp created_at
+    }
+    PLAYLIST_VERSE {
+        uuid id PK
+        uuid playlist_id FK
+        uuid verse_id FK
+        integer position
+    }
+
+    VERSE ||--o{ VERSE_CATEGORY : tagged_with
+    CATEGORY ||--o{ VERSE_CATEGORY : tags
+    VERSE ||--o{ PLAYLIST_VERSE : included_in
+    CURATED_PLAYLIST ||--o{ PLAYLIST_VERSE : contains
+    </div>
+  </div>
+
+  <h3>Analytics</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+erDiagram
+    USER {
+        uuid id PK
+        string email UK
+    }
+    VERSE {
+        uuid id PK
+        string reference UK
+    }
+    CURATED_PLAYLIST {
+        uuid id PK
+        string title
+    }
+    PLAY_EVENT {
+        uuid id PK
+        uuid user_id FK
+        uuid verse_id FK
+        uuid playlist_id FK
+        string source
+        integer listen_duration_ms
+        timestamp played_at
+    }
+
+    USER ||--o{ PLAY_EVENT : generates
+    VERSE ||--o{ PLAY_EVENT : tracked_in
+    CURATED_PLAYLIST ||--o{ PLAY_EVENT : tracked_in
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- ── Audio Architecture ── -->
+  <h2>Audio Architecture</h2>
+
+  <h3>Generation Pipeline (CMS &rarr; ElevenLabs &rarr; S3)</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+sequenceDiagram
+    participant Admin
+    participant CMS as Go CMS
+    participant DB as PostgreSQL
+    participant EL as ElevenLabs
+    participant S3 as AWS S3
+
+    Admin->>CMS: Click Generate Audio
+    CMS->>DB: Fetch verse text
+    CMS->>EL: TTS request
+    EL-->>CMS: audio/mpeg stream
+    CMS->>S3: Upload audio file
+    CMS->>DB: Save s3_key + duration
+    CMS-->>Admin: Preview URL
+    </div>
+  </div>
+
+  <h3>Playback Flow (User &rarr; CloudFront)</h3>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+sequenceDiagram
+    participant U as User
+    participant App as Go App
+    participant DB as PostgreSQL
+    participant CF as CloudFront
+
+    U->>App: Page load / auto-play
+    App->>DB: Fetch current verse
+    DB-->>App: Verse text + s3_key
+    App->>App: Sign CloudFront URL
+    App-->>U: Verse text + signed URL
+    U->>CF: Stream audio
+    CF-->>U: Audio (progressive)
+    U->>App: Log play event
+    </div>
+  </div>
+
+  <h3>S3 Key Structure</h3>
+  <pre class="code-block">verses/{verse_id}/audio.mp3          ← ElevenLabs generated
+verses/{verse_id}/audio_manual.mp3   ← manually uploaded override
+playlists/{playlist_id}/cover.jpg    ← playlist artwork</pre>
+  <p>All S3 objects are private. Users always access audio via signed CloudFront URLs &mdash; never direct S3 URLs.</p>
+
+  <hr>
+
+  <!-- ── CMS Architecture ── -->
+  <h2>CMS Architecture</h2>
+  <p>The admin CMS is a route group (<code>/admin/*</code>) within the same Go binary. Protected by a separate admin session, never exposed to public users.</p>
+
+  <h3>CMS Screens</h3>
+  <table>
+    <thead><tr><th>Screen</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td>Verse Library</td><td>Browse full NKJV from the licensed API; search by book/chapter/verse</td></tr>
+      <tr><td>Verse Editor</td><td>Select verse, generate ElevenLabs audio or upload manually, preview, set metadata</td></tr>
+      <tr><td>Category Manager</td><td>Create/edit category tags, colors, and sort order</td></tr>
+      <tr><td>Playlist Manager</td><td>Create curated playlists, drag-reorder verses, publish/unpublish</td></tr>
+      <tr><td>Publish Queue</td><td>Review all staged verses before going live</td></tr>
+      <tr><td>Analytics Dashboard</td><td>Play counts, listen duration, popular categories, waitlist growth</td></tr>
+      <tr><td>Waitlist Export</td><td>CSV download of waitlist emails</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ElevenLabs Integration Notes</h3>
+  <ul>
+    <li>Voice ID is configured via environment variable &mdash; changing voices requires no code changes</li>
+    <li>Concurrent request limit respected via a Go semaphore</li>
+    <li>Audio stored immediately on generation &mdash; no re-generation on playback</li>
+    <li>If generation fails, admin is notified and can retry or upload manually</li>
+  </ul>
+
+  <hr>
+
+  <!-- ── Phase 2 Readiness ── -->
+  <h2>Phase 2 Architecture Considerations</h2>
+  <p>Phase 1 backend is designed to carry forward into the Phase 2 native app without rebuilding. Decisions baked in now:</p>
+  <ul>
+    <li>REST API is versioned (<code>/v1/</code>) &mdash; Phase 2 React Native app consumes the same endpoints</li>
+    <li>Auth can extend to Apple Sign-In / Google OAuth without breaking existing magic link sessions</li>
+    <li><code>play_event.source</code> field supports <code>web</code>, <code>ios</code>, <code>android</code> tracking from day one</li>
+    <li>Stripe Payment Intents are compatible with the data model when Apple IAP / Google Play Billing replaces them in Phase 2</li>
+    <li>Push notification preferences table is pre-modeled but not activated in Phase 1</li>
+  </ul>
+
+  <hr>
+
+  <!-- ── Security ── -->
+  <h2>Security</h2>
+
+  <h3>Authentication</h3>
+  <ul>
+    <li>Magic link tokens: cryptographically random (32 bytes), HMAC-SHA256 hashed before Redis storage</li>
+    <li>Session cookies: HttpOnly, Secure, SameSite=Lax, 30-day rolling expiry</li>
+    <li>Admin passwords: bcrypt cost factor 12</li>
+    <li>Rate limiting on auth endpoints: 5 attempts per IP per 15 minutes (Redis-backed)</li>
+  </ul>
+
+  <h3>Audio Access</h3>
+  <ul>
+    <li>All audio served via signed CloudFront URLs (15-min TTL)</li>
+    <li>URLs are optionally IP-bound (configurable &mdash; trade-off with mobile network switching)</li>
+    <li>S3 bucket is fully private &mdash; no public access policy</li>
+  </ul>
+
+  <h3>Stripe Webhook Security</h3>
+  <ul>
+    <li>Webhook endpoint validates <code>Stripe-Signature</code> header using secret key</li>
+    <li>Idempotency: <code>stripe_payment_intent_id</code> is unique-indexed &mdash; duplicate webhook events are safe</li>
+  </ul>
+
+  <h3>Dependency Security</h3>
+  <ul>
+    <li><code>govulncheck</code> runs in CI on every push</li>
+    <li>Dependencies pinned with <code>go.sum</code></li>
+  </ul>
+
+  <h3>Privacy &amp; GDPR Notes</h3>
+  <ul>
+    <li>Account deletion: soft-delete via <code>deleted_at</code>, then hard-delete PII on a 30-day background job</li>
+    <li>Data export: <code>GET /account/export</code> returns JSON of all user data</li>
+    <li>Waitlist entries stored with explicit consent timestamp</li>
+    <li>PostHog configured to respect <code>Do Not Track</code> header; no PII sent to PostHog</li>
+  </ul>
+
+  <hr>
+
+  <!-- ── Deployment ── -->
+  <h2>Deployment Architecture</h2>
+  <div class="diagram-wrap">
+    <div class="mermaid">
+graph TB
+    CF_DNS["Cloudflare\nDNS + DDoS + WAF"]
+    LB["DigitalOcean\nLoad Balancer"]
+    App1["Go App\nContainer 1"]
+    App2["Go App\nContainer 2"]
+    PG[("Managed PostgreSQL\nDigitalOcean")]
+    Redis[("Managed Redis\nDigitalOcean")]
+    S3["AWS S3\nAudio Files"]
+    CDN["AWS CloudFront\nAudio CDN"]
+    PostHog["PostHog"]
+    SendGrid["SendGrid"]
+    EL["ElevenLabs\nTTS API"]
+
+    CF_DNS --> LB
+    LB --> App1
+    LB --> App2
+    App1 --> PG
+    App2 --> PG
+    App1 --> Redis
+    App2 --> Redis
+    App1 --> S3
+    S3 --> CDN
+    App1 --> EL
+    App1 --> PostHog
+    App1 --> SendGrid
+    </div>
+  </div>
+
+  <h3>Environment Variables</h3>
+  <table>
+    <thead><tr><th>Variable</th><th>Description</th></tr></thead>
+    <tbody>
+      <tr><td><code>DATABASE_URL</code></td><td>PostgreSQL connection string</td></tr>
+      <tr><td><code>REDIS_URL</code></td><td>Redis connection string</td></tr>
+      <tr><td><code>AWS_ACCESS_KEY_ID</code></td><td>S3 + CloudFront signing</td></tr>
+      <tr><td><code>AWS_SECRET_ACCESS_KEY</code></td><td>S3 + CloudFront signing</td></tr>
+      <tr><td><code>S3_BUCKET</code></td><td>Audio file bucket name</td></tr>
+      <tr><td><code>CLOUDFRONT_DOMAIN</code></td><td>CDN domain for signed URLs</td></tr>
+      <tr><td><code>CLOUDFRONT_KEY_PAIR_ID</code></td><td>CloudFront signing key ID</td></tr>
+      <tr><td><code>CLOUDFRONT_PRIVATE_KEY</code></td><td>CloudFront signing private key (PEM)</td></tr>
+      <tr><td><code>ELEVENLABS_API_KEY</code></td><td>TTS API key</td></tr>
+      <tr><td><code>ELEVENLABS_VOICE_ID</code></td><td>Configured voice for NKJV audio</td></tr>
+      <tr><td><code>BIBLE_API_KEY</code></td><td>NKJV licensed API key</td></tr>
+      <tr><td><code>SENDGRID_API_KEY</code></td><td>Transactional email</td></tr>
+      <tr><td><code>SENDGRID_MAGIC_LINK_TEMPLATE_ID</code></td><td>Magic link email template</td></tr>
+      <tr><td><code>STRIPE_SECRET_KEY</code></td><td>Donation processing</td></tr>
+      <tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>Webhook signature validation</td></tr>
+      <tr><td><code>POSTHOG_API_KEY</code></td><td>Analytics</td></tr>
+      <tr><td><code>ADMIN_SESSION_SECRET</code></td><td>HMAC key for admin sessions</td></tr>
+      <tr><td><code>APP_BASE_URL</code></td><td>Public URL (used in magic links)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Scale Migration Path (DigitalOcean &rarr; AWS)</h3>
+  <p>Everything is Docker-first. If Phase 2 usage warrants migration:</p>
+  <ol>
+    <li>Go app containers &rarr; AWS ECS Fargate (no code changes)</li>
+    <li>Managed PostgreSQL &rarr; AWS RDS (<code>pg_dump</code>/restore, connection string swap)</li>
+    <li>Managed Redis &rarr; AWS ElastiCache (connection string swap)</li>
+    <li>S3 + CloudFront &mdash; already on AWS, no migration needed</li>
+    <li>Load balancer &rarr; AWS ALB</li>
+  </ol>
+
+  <hr>
+
+  <!-- ── CI/CD ── -->
+  <h2>CI/CD Pipeline</h2>
+  <pre class="code-block">Push to main:
+  1. go test ./...
+  2. govulncheck ./...
+  3. docker build
+  4. docker push  (GitHub Container Registry)
+  5. DigitalOcean App Platform deploy  (rolling, zero-downtime)
+
+Feature branches: run tests only. No deploy.</pre>
+
+  <hr>
+
+  <!-- ── Open Questions ── -->
+  <h2>Open Questions</h2>
+  <p>These items need client resolution before or during development:</p>
+  <div class="open-questions">
+    <ol>
+      <li><strong>NKJV API vendor</strong> &mdash; which specific licensed API are you using for the NKJV text? (e.g., API.Bible with NKJV license, Faithlife, direct Thomas Nelson license + self-hosted data?) This affects the Bible integration architecture.</li>
+      <li><strong>ElevenLabs plan</strong> &mdash; which plan and which voice has been selected? Concurrent generation limits vary by plan and affect CMS performance.</li>
+      <li><strong>Audio coverage</strong> &mdash; will every verse in the curated library have ElevenLabs-generated audio before launch, or does the app need to handle verses with no audio yet?</li>
+      <li><strong>Donation amounts</strong> &mdash; are donations free-form (user enters amount) or preset tiers (e.g., $5 / $10 / $25)?</li>
+      <li><strong>Category structure</strong> &mdash; how many categories at launch, and does the team have an initial tag list?</li>
+      <li><strong>COPPA / age gating</strong> &mdash; given the faith-based audience includes families, is there any under-13 user concern that needs to be addressed?</li>
+      <li><strong>Analytics tool</strong> &mdash; PostHog is recommended (GDPR-friendly, self-hostable). Is that acceptable, or does the team have a preference?</li>
+      <li><strong>Admin users</strong> &mdash; how many team members need CMS access, and is role-based access needed (e.g., editor vs. publisher)?</li>
+      <li><strong>Waitlist email flow</strong> &mdash; beyond the capture, what follow-up cadence is planned? (welcome email only, or a drip sequence?)</li>
+      <li><strong>AWS account</strong> &mdash; does the client have an existing AWS account for S3/CloudFront, or should that be provisioned as part of this engagement?</li>
+    </ol>
+  </div>
+
+</div>
+
+<!-- ── Lightbox modal ── -->
+<div id="diagram-modal" role="dialog" aria-modal="true" aria-label="Enlarged diagram">
+  <div id="modal-inner">
+    <button id="modal-close" aria-label="Close">&times;</button>
+    <div id="modal-svg-container"></div>
+  </div>
+</div>
+
+<script>
+  mermaid.initialize({
+    startOnLoad: false,
+    theme: 'base',
+    themeVariables: {
+      primaryColor:        '#F6F4F0',
+      primaryTextColor:    '#222222',
+      primaryBorderColor:  '#C9963A',
+      lineColor:           '#7a7062',
+      secondaryColor:      '#ffffff',
+      tertiaryColor:       '#ffffff',
+      background:          '#ffffff',
+      mainBkg:             '#ffffff',
+      nodeBorder:          '#D4A44C',
+      clusterBkg:          '#F6F4F0',
+      titleColor:          '#222222',
+      edgeLabelBackground: '#F6F4F0',
+      fontFamily:          "'DM Sans', system-ui, sans-serif",
+      fontSize:            '14px'
+    }
+  });
+
+  const modal     = document.getElementById('diagram-modal');
+  const container = document.getElementById('modal-svg-container');
+  const closeBtn  = document.getElementById('modal-close');
+
+  function openModal(wrap) {
+    const svg = wrap.querySelector('svg');
+    if (!svg) return;
+    container.innerHTML = '';
+    const clone = svg.cloneNode(true);
+    // Override Mermaid's inline max-width so the clone fills the modal
+    clone.style.maxWidth = 'none';
+    clone.style.width    = '100%';
+    clone.style.height   = 'auto';
+    clone.style.display  = 'block';
+    container.appendChild(clone);
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  // Attach click handlers only after Mermaid finishes rendering all diagrams
+  window.addEventListener('DOMContentLoaded', () => {
+    mermaid.run({ querySelector: '.mermaid' })
+      .then(() => {
+        document.querySelectorAll('.diagram-wrap').forEach(wrap => {
+          wrap.addEventListener('click', () => openModal(wrap));
+        });
+      })
+      .catch(() => {
+        setTimeout(() => {
+          document.querySelectorAll('.diagram-wrap').forEach(wrap => {
+            wrap.addEventListener('click', () => openModal(wrap));
+          });
+        }, 3000);
+      });
+  });
+
+  closeBtn.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+</script>
+</body>
+</html>
