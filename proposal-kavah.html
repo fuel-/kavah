@@ -489,14 +489,16 @@
       <li><span class="toc-num">02</span><a href="#phase-1-feature-set">Phase 1 Feature Set</a></li>
       <li><span class="toc-num">03</span><a href="#brand-design">Brand &amp; Design</a></li>
       <li><span class="toc-num">04</span><a href="#tech-stack">Recommended Tech Stack</a></li>
-      <li><span class="toc-num">05</span><a href="#system-architecture">System Architecture</a></li>
-      <li><span class="toc-num">06</span><a href="#how-key-pieces-work">How the Key Pieces Work</a></li>
-      <li><span class="toc-num">07</span><a href="#audio-flow">Audio Flow</a></li>
-      <li><span class="toc-num">08</span><a href="#cms-audio-flow">CMS &mdash; Audio Generation Flow</a></li>
-      <li><span class="toc-num">09</span><a href="#milestone-payment">Milestone Payment Structure</a></li>
-      <li><span class="toc-num">10</span><a href="#what-drives-estimate">What Drives the Estimate</a></li>
-      <li><span class="toc-num">11</span><a href="#out-of-scope">What's Not in Phase 1 Scope</a></li>
-      <li><span class="toc-num">12</span><a href="#next-steps">Next Steps</a></li>
+      <li><span class="toc-num">05</span><a href="#operating-costs">Est. Operating Costs</a></li>
+      <li><span class="toc-num">06</span><a href="#system-architecture">System Architecture</a></li>
+      <li><span class="toc-num">07</span><a href="#how-key-pieces-work">How the Key Pieces Work</a></li>
+      <li><span class="toc-num">08</span><a href="#audio-flow">Audio Flow</a></li>
+      <li><span class="toc-num">09</span><a href="#cms-audio-flow">CMS &mdash; Audio Generation Flow</a></li>
+      <li><span class="toc-num">10</span><a href="#milestone-payment">Milestone &amp; Timeline</a></li>
+      <li><span class="toc-num">11</span><a href="#what-drives-estimate">What Drives the Estimate</a></li>
+      <li><span class="toc-num">12</span><a href="#post-launch-support">Post-Launch Support</a></li>
+      <li><span class="toc-num">13</span><a href="#out-of-scope">What's Not in Scope</a></li>
+      <li><span class="toc-num">14</span><a href="#next-steps">Next Steps</a></li>
     </ol>
   </nav>
 
@@ -561,7 +563,7 @@
   <hr>
 
   <h2 id="brand-design">Brand &amp; Design</h2>
-  <p>We&rsquo;ll build the UI from scratch, aligned to the established brand identity. All screens are designed and client-approved before development begins.</p>
+  <p>We&rsquo;ll build the UI from scratch, aligned to the established brand identity. All screens are designed and client-approved before development begins. <strong>Two rounds of revisions are included at the design stage.</strong> A third round or significant changes to screens that have already been approved require a written change order before work continues.</p>
 
   <table>
     <thead><tr><th>Element</th><th>Spec</th></tr></thead>
@@ -616,6 +618,30 @@
       <tr><td>Deployment</td><td>DigitalOcean</td><td>Cost-effective at Phase 1 scale, AWS-ready architecture</td></tr>
     </tbody>
   </table>
+
+  <hr>
+
+  <h2 id="operating-costs">Estimated Monthly Operating Costs</h2>
+  <p>The project estimate covers design and development. Below are the third-party service costs you&rsquo;ll pay directly to run the app after launch &mdash; these are not billed by us.</p>
+
+  <table>
+    <thead><tr><th>Service</th><th>What It Covers</th><th>Est. Monthly Cost</th></tr></thead>
+    <tbody>
+      <tr><td>DigitalOcean</td><td>App server, managed PostgreSQL, Redis</td><td>$80 &ndash; $150</td></tr>
+      <tr><td>AWS S3</td><td>Audio file storage</td><td>$5 &ndash; $15</td></tr>
+      <tr><td>AWS CloudFront</td><td>Audio CDN delivery</td><td>$10 &ndash; $30</td></tr>
+      <tr><td>NKJV Bible API</td><td>Licensed scripture access</td><td>$50 &ndash; $200 <em>(varies by provider)</em></td></tr>
+      <tr><td>SendGrid</td><td>Magic links and email delivery</td><td>$0 &ndash; $20 <em>(free tier likely sufficient early on)</em></td></tr>
+      <tr><td>PostHog</td><td>Analytics</td><td>$0 <em>(free tier)</em></td></tr>
+      <tr><td>Stripe</td><td>Donation processing</td><td>2.9% + $0.30 per transaction <em>(no monthly fee)</em></td></tr>
+      <tr><td>Domain + SSL</td><td>Annual renewal</td><td>~$1 &ndash; $2 <em>(billed yearly)</em></td></tr>
+      <tr class="total-row"><td>Estimated Total</td><td></td><td>~$145 &ndash; $415 / mo</td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>ElevenLabs note:</strong> Audio is generated once per verse and stored in S3 &mdash; not re-generated on every play. The cost to produce audio for your initial library is a one-time expense (roughly $0.06&ndash;$0.10 per verse). Adding new verses later incurs the same small per-verse fee, not a recurring monthly charge.
+  </div>
 
   <hr>
 
@@ -734,20 +760,22 @@ sequenceDiagram
 
   <hr>
 
-  <h2 id="milestone-payment">Milestone Payment Structure</h2>
+  <h2 id="milestone-payment">Milestone &amp; Timeline</h2>
   <p>This engagement is <strong>fixed-price with milestone-based payments</strong>. No hourly billing.</p>
 
   <table>
-    <thead><tr><th>Milestone</th><th>Description</th><th>Payment</th></tr></thead>
+    <thead><tr><th>Milestone</th><th>Description</th><th>Est. Duration</th><th>Payment</th></tr></thead>
     <tbody>
-      <tr><td>M1 &mdash; Contract Signing</td><td>Agreement executed, project kickoff</td><td>20% of total</td></tr>
-      <tr><td>M2 &mdash; Design Approval</td><td>All screens designed and client-approved</td><td>25% of total</td></tr>
-      <tr><td>M3 &mdash; Delivery for Review</td><td>Working app delivered for client review and testing</td><td>25% of total</td></tr>
-      <tr><td>M4 &mdash; Live Launch</td><td>App live, any launch issues resolved</td><td>30% of total</td></tr>
+      <tr><td>M1 &mdash; Contract Signing</td><td>Agreement executed, project kickoff</td><td>Week 0</td><td>20% of total</td></tr>
+      <tr><td>M2 &mdash; Design Approval</td><td>All screens designed and client-approved</td><td>Weeks 3 &ndash; 5</td><td>25% of total</td></tr>
+      <tr><td>M3 &mdash; Delivery for Review</td><td>Working app delivered for client review and testing</td><td>Weeks 12 &ndash; 15</td><td>25% of total</td></tr>
+      <tr><td>M4 &mdash; Live Launch</td><td>App live, any launch issues resolved</td><td>Weeks 14 &ndash; 18</td><td>30% of total</td></tr>
+      <tr class="total-row"><td colspan="2">Total Project Duration</td><td colspan="2">14 &ndash; 18 weeks &nbsp;&middot;&nbsp; approximately 4 months</td></tr>
     </tbody>
   </table>
 
   <p style="font-size:1.05rem;"><strong>Estimated Total: $32,000 &ndash; $42,000</strong></p>
+  <p style="font-size:0.88rem; color:var(--muted); margin-top:-6px;">The low end assumes clean third-party integrations, design approval within two revision rounds, and no major surprises during development. The high end accounts for additional revision cycles, integration complexity with the NKJV API, and iOS audio auto-play edge cases &mdash; the trickiest technical piece of this build.</p>
 
   <div class="callout">
     Scope changes require a written change order with an agreed price before work begins. Full source code and IP transfers to the client upon final payment.
@@ -961,6 +989,44 @@ sequenceDiagram
     <strong>Fixed-price means no surprises.</strong>
     The total above is fixed &mdash; not a starting point. If a feature takes longer than estimated, that&rsquo;s our risk, not yours. You will never receive an invoice higher than the agreed contract amount. The only thing that shifts the price is scope: new features or meaningful changes require a written change order with an agreed price before work begins. This protects both parties.
   </div>
+
+  <hr>
+
+  <h2 id="post-launch-support">Post-Launch Support</h2>
+  <p>The engagement doesn&rsquo;t end at go-live. Here&rsquo;s what&rsquo;s covered and what isn&rsquo;t after the app launches.</p>
+
+  <div class="callout">
+    <strong>30-day bug warranty.</strong> Any defects that surface within 30 days of launch &mdash; things that don&rsquo;t work as specified in this proposal &mdash; are fixed at no additional charge. This covers bugs in delivered work, not new feature requests or third-party service outages.
+  </div>
+
+  <p>After the 30-day window, ongoing support is available as an optional monthly retainer. Retainers are pre-paid, roll over unused hours for one month, and can be cancelled with 30 days&rsquo; notice. Ad-hoc work outside a retainer is billed at the standard hourly rate.</p>
+
+  <h3>Retainer Options</h3>
+  <table>
+    <thead><tr><th>Plan</th><th>Hours / mo</th><th>What&rsquo;s Included</th><th>Monthly</th></tr></thead>
+    <tbody>
+      <tr>
+        <td><strong>Essential</strong></td>
+        <td>4 hrs</td>
+        <td>Bug fixes, uptime monitoring review, vendor coordination on third-party issues</td>
+        <td>$480</td>
+      </tr>
+      <tr>
+        <td><strong>Standard</strong></td>
+        <td>8 hrs</td>
+        <td>Everything in Essential, plus minor UI tweaks, CMS support for the content team, and dependency updates</td>
+        <td>$960</td>
+      </tr>
+      <tr>
+        <td><strong>Growth</strong></td>
+        <td>16 hrs</td>
+        <td>Everything in Standard, plus small feature additions, analytics reviews, and Phase 2 scoping and planning</td>
+        <td>$1,920</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>Third-party outages &mdash; ElevenLabs, the Bible API, AWS, SendGrid &mdash; are outside this scope, though we&rsquo;ll help diagnose and coordinate with vendors if they occur.</p>
 
   <hr>
 
