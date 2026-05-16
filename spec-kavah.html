@@ -209,6 +209,40 @@
       overflow: auto;
     }
 
+    /* ── Document nav ── */
+    .doc-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--text);
+      border-bottom: 1px solid rgba(212,164,76,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 46px;
+    }
+    .doc-nav-back {
+      font-size: 0.78rem;
+      color: rgba(246,244,240,0.45);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .doc-nav-back:hover { color: rgba(246,244,240,0.85); }
+    .doc-nav-links { display: flex; align-items: center; gap: 14px; }
+    .doc-nav-link {
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(246,244,240,0.4);
+      transition: color 0.2s;
+    }
+    .doc-nav-link:hover { color: rgba(246,244,240,0.75); }
+    .doc-nav-link.active { color: var(--gold-dark); }
+    .doc-nav-sep { color: rgba(246,244,240,0.18); font-size: 0.85rem; }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -225,6 +259,16 @@
   </style>
 </head>
 <body>
+
+<nav class="doc-nav" aria-label="Document navigation">
+  <a href="index.html" class="doc-nav-back">← Kavah</a>
+  <div class="doc-nav-links">
+    <a href="proposal-kavah.html" class="doc-nav-link">Proposal</a>
+    <span class="doc-nav-sep" aria-hidden="true">·</span>
+    <a href="spec-kavah.html" class="doc-nav-link active">Tech Spec</a>
+  </div>
+</nav>
+
 <div class="page">
 
   <div class="doc-header">

@@ -208,6 +208,100 @@
       overflow: auto;
     }
 
+    /* ── Document nav ── */
+    .doc-nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--text);
+      border-bottom: 1px solid rgba(212,164,76,0.18);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 56px;
+      height: 46px;
+    }
+    .doc-nav-back {
+      font-size: 0.78rem;
+      color: rgba(246,244,240,0.45);
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+    }
+    .doc-nav-back:hover { color: rgba(246,244,240,0.85); }
+    .doc-nav-links { display: flex; align-items: center; gap: 14px; }
+    .doc-nav-link {
+      text-decoration: none;
+      font-size: 0.72rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgba(246,244,240,0.4);
+      transition: color 0.2s;
+    }
+    .doc-nav-link:hover { color: rgba(246,244,240,0.75); }
+    .doc-nav-link.active { color: var(--gold-dark); }
+    .doc-nav-sep { color: rgba(246,244,240,0.18); font-size: 0.85rem; }
+
+    /* ── Estimate Breakdown ── */
+    .breakdown-list {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--white);
+      padding: 0 24px;
+      margin: 18px 0 6px;
+    }
+    .breakdown-item {
+      border-bottom: 1px solid var(--border);
+      padding: 18px 0;
+    }
+    .breakdown-item:last-child { border-bottom: none; }
+    .breakdown-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .breakdown-title { font-weight: 600; font-size: 0.92rem; }
+    .hours-badge {
+      font-size: 0.78rem;
+      color: var(--gold-light);
+      background: rgba(201,150,58,0.08);
+      border: 1px solid rgba(201,150,58,0.22);
+      padding: 2px 10px;
+      border-radius: 100px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .breakdown-item ul { margin: 0; padding-left: 18px; }
+    .breakdown-item li {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin-bottom: 3px;
+      line-height: 1.6;
+    }
+    .breakdown-total {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(212,164,76,0.1);
+      border: 1px solid rgba(212,164,76,0.25);
+      border-radius: 8px;
+      padding: 14px 24px;
+      margin: 12px 0 28px;
+      font-weight: 600;
+      font-size: 0.92rem;
+    }
+    .guarantee-callout {
+      background: var(--white);
+      border-left: 3px solid var(--gold-dark);
+      border-radius: 0 8px 8px 0;
+      padding: 18px 22px;
+      margin: 24px 0 0;
+      font-size: 0.92rem;
+    }
+    .guarantee-callout strong { display: block; margin-bottom: 6px; }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -224,6 +318,16 @@
   </style>
 </head>
 <body>
+
+<nav class="doc-nav" aria-label="Document navigation">
+  <a href="index.html" class="doc-nav-back">← Kavah</a>
+  <div class="doc-nav-links">
+    <a href="proposal-kavah.html" class="doc-nav-link active">Proposal</a>
+    <span class="doc-nav-sep" aria-hidden="true">·</span>
+    <a href="spec-kavah.html" class="doc-nav-link">Tech Spec</a>
+  </div>
+</nav>
+
 <div class="page">
 
   <div class="doc-header">
@@ -484,29 +588,214 @@ sequenceDiagram
     Scope changes require a written change order with an agreed price before work begins. Full source code and IP transfers to the client upon final payment.
   </div>
 
-  <h3>Estimated Hours Breakdown</h3>
-  <p><em>For transparency &mdash; billing is fixed-price, not hourly.</em></p>
-  <table>
-    <thead><tr><th>Feature Area</th><th>Estimated Hours</th></tr></thead>
-    <tbody>
-      <tr><td>UI/UX Design (all screens, brand-aligned)</td><td>35&ndash;45 hrs</td></tr>
-      <tr><td>Project Setup &amp; Infrastructure</td><td>15&ndash;20 hrs</td></tr>
-      <tr><td>Magic Link Auth &amp; Sessions</td><td>12&ndash;16 hrs</td></tr>
-      <tr><td>NKJV Bible API Integration</td><td>15&ndash;20 hrs</td></tr>
-      <tr><td>ElevenLabs TTS Integration</td><td>18&ndash;24 hrs</td></tr>
-      <tr><td>Audio CDN (S3 + CloudFront)</td><td>16&ndash;22 hrs</td></tr>
-      <tr><td>Core Player (auto-play, verse display, controls)</td><td>25&ndash;32 hrs</td></tr>
-      <tr><td>Category Filtering &amp; Search</td><td>14&ndash;18 hrs</td></tr>
-      <tr><td>Admin CMS (verse, audio, tags, publish)</td><td>35&ndash;45 hrs</td></tr>
-      <tr><td>Email (magic links, waitlist, notifications)</td><td>14&ndash;18 hrs</td></tr>
-      <tr><td>Donations (Stripe)</td><td>16&ndash;20 hrs</td></tr>
-      <tr><td>Analytics (PostHog)</td><td>8&ndash;12 hrs</td></tr>
-      <tr><td>Waitlist Capture &amp; &ldquo;Get the App&rdquo; CTA</td><td>6&ndash;10 hrs</td></tr>
-      <tr><td>Testing &amp; QA</td><td>20&ndash;26 hrs</td></tr>
-      <tr><td>Deployment &amp; Launch Prep</td><td>12&ndash;16 hrs</td></tr>
-      <tr class="total-row"><td>Total</td><td>261&ndash;344 hrs</td></tr>
-    </tbody>
-  </table>
+  <h2>What Drives the Estimate</h2>
+  <p>This is a production app built from scratch &mdash; not a template swap or off-the-shelf product. Every piece below is custom work, designed and delivered to spec. Here&rsquo;s what&rsquo;s actually included in each line item.</p>
+
+  <div class="breakdown-list">
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">UI/UX Design</span>
+        <span class="hours-badge">35&ndash;45 hrs</span>
+      </div>
+      <ul>
+        <li>Full screen inventory for mobile: home, browse, search, account, sign-in, donation, waitlist, and empty states</li>
+        <li>Brand-aligned UI &mdash; Radnika Next, DM Sans, Lora Italic, and gold accents applied consistently across every screen and component state</li>
+        <li>Every screen spec&rsquo;d and client-approved before a line of code is written &mdash; no surprises at handoff</li>
+        <li>Responsive across iOS and Android browsers without a native app</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Project Setup &amp; Infrastructure</span>
+        <span class="hours-badge">15&ndash;20 hrs</span>
+      </div>
+      <ul>
+        <li>Repository structure, CI/CD pipeline, and environment configuration (dev / staging / prod)</li>
+        <li>Domain, DNS, SSL, DigitalOcean provisioning, PostgreSQL and Redis setup</li>
+        <li>Foundations that every other feature builds on &mdash; done right once so nothing needs rebuilding later</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Magic Link Auth &amp; Sessions</span>
+        <span class="hours-badge">12&ndash;16 hrs</span>
+      </div>
+      <ul>
+        <li>Passwordless email sign-in: secure token generation, SendGrid delivery, validation, and expiry</li>
+        <li>Persistent session management across devices via Redis</li>
+        <li>Secure account deletion and data removal flow (Right To Be Forgotten / GDPR compliance)</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">NKJV Bible API Integration</span>
+        <span class="hours-badge">15&ndash;20 hrs</span>
+      </div>
+      <ul>
+        <li>API contract review and integration with the licensed NKJV source</li>
+        <li>Verse ingestion and internal data model &mdash; normalized so the team can curate and tag easily via the CMS</li>
+        <li>Error handling and fallbacks for API availability issues</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">ElevenLabs TTS Integration</span>
+        <span class="hours-badge">18&ndash;24 hrs</span>
+      </div>
+      <ul>
+        <li>API integration for on-demand audio generation from verse text</li>
+        <li>In-CMS audio preview before publishing &mdash; team approves before anything goes live</li>
+        <li>Error handling, rate limiting, and cost guardrails to prevent runaway API charges</li>
+        <li>Audio file management: naming, versioning, and linking to verse records in the database</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Audio CDN &mdash; S3 + CloudFront</span>
+        <span class="hours-badge">16&ndash;22 hrs</span>
+      </div>
+      <ul>
+        <li>S3 bucket configuration, IAM policies, and signed URL generation</li>
+        <li>CloudFront distribution with HLS streaming for smooth playback on any mobile connection</li>
+        <li>Cache invalidation on content updates so users always hear the approved audio</li>
+        <li>Performance-tuned delivery: fast cold-start, minimal buffering on 4G and LTE</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Core Player</span>
+        <span class="hours-badge">25&ndash;32 hrs</span>
+      </div>
+      <ul>
+        <li>Auto-play on load &mdash; iOS and Android browsers block audio without a user gesture; handling this correctly across devices requires careful implementation</li>
+        <li>Verse text display synced with audio state: playing, paused, loading, and ended</li>
+        <li>Full controls: play, pause, next, previous, shuffle, and repeat-one (for memorization)</li>
+        <li>State management across playlist navigation and category switching without losing position</li>
+        <li>Graceful handling of interruptions: incoming calls, app backgrounding, and network drops</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Category Filtering &amp; Search</span>
+        <span class="hours-badge">14&ndash;18 hrs</span>
+      </div>
+      <ul>
+        <li>Tag taxonomy design and database schema for themes (peace, faith, healing, love, strength, and more)</li>
+        <li>Filtered browsing by theme with smooth mobile UX and instant feedback</li>
+        <li>Keyword and verse-reference search within the curated library</li>
+        <li>Indexed queries for fast results as the library grows</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Admin CMS</span>
+        <span class="hours-badge">35&ndash;45 hrs</span>
+      </div>
+      <ul>
+        <li>Full create / edit / delete for verses, audio files, categories, and playlists</li>
+        <li>Bible browsing UI: search and select from the full NKJV directly within the CMS</li>
+        <li>One-click ElevenLabs audio generation with in-browser preview before publishing</li>
+        <li>Manual audio upload as an alternative to TTS generation</li>
+        <li>Publish / unpublish / draft workflow &mdash; full editorial control over what users see</li>
+        <li>Role-based access: admin-only, separate from the user-facing app</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Email</span>
+        <span class="hours-badge">14&ndash;18 hrs</span>
+      </div>
+      <ul>
+        <li>Magic link delivery via SendGrid with reliable deliverability configuration</li>
+        <li>Waitlist confirmation emails and list management</li>
+        <li>Transactional email templates, brand-aligned with Kavah&rsquo;s visual identity</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Donations &mdash; Stripe</span>
+        <span class="hours-badge">16&ndash;20 hrs</span>
+      </div>
+      <ul>
+        <li>Stripe Checkout integration for one-time giving</li>
+        <li>Guest and authenticated donation flows &mdash; no account required to give</li>
+        <li>Donation history per account when signed in</li>
+        <li>Webhook handling for payment confirmation and receipt delivery</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Analytics &mdash; PostHog</span>
+        <span class="hours-badge">8&ndash;12 hrs</span>
+      </div>
+      <ul>
+        <li>Event instrumentation: play, pause, skip, category filter, search, sign-up, and donation</li>
+        <li>Internal dashboard configuration for the Kavah team</li>
+        <li>Privacy-compliant setup (GDPR) &mdash; no invasive tracking or third-party data sharing</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Waitlist Capture &amp; &ldquo;Get the App&rdquo; CTA</span>
+        <span class="hours-badge">6&ndash;10 hrs</span>
+      </div>
+      <ul>
+        <li>Persistent CTA placement across key app screens</li>
+        <li>Waitlist capture form with storage and deduplication</li>
+        <li>Confirmation flow so users know they&rsquo;re on the list for the native app launch</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Testing &amp; QA</span>
+        <span class="hours-badge">20&ndash;26 hrs</span>
+      </div>
+      <ul>
+        <li>Unit and integration tests for all API endpoints</li>
+        <li>Cross-browser mobile testing: iOS Safari, Android Chrome, and common edge cases</li>
+        <li>Audio playback edge cases: slow connections, interrupted playback, and permission denials</li>
+        <li>End-to-end flows: sign-in, donate, content browsing, search, and CMS publish</li>
+      </ul>
+    </div>
+
+    <div class="breakdown-item">
+      <div class="breakdown-header">
+        <span class="breakdown-title">Deployment &amp; Launch Prep</span>
+        <span class="hours-badge">12&ndash;16 hrs</span>
+      </div>
+      <ul>
+        <li>Production environment hardening and security review</li>
+        <li>Monitoring and alerting setup: uptime, error rates, and API health</li>
+        <li>Load testing before launch to confirm the app handles traffic spikes</li>
+        <li>Launch checklist walk-through and go-live support</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="breakdown-total">
+    <span>Total Estimated Hours</span>
+    <span>261&ndash;344 hrs</span>
+  </div>
+
+  <div class="guarantee-callout">
+    <strong>Fixed-price means no surprises.</strong>
+    The total above is fixed &mdash; not a starting point. If a feature takes longer than estimated, that&rsquo;s our risk, not yours. You will never receive an invoice higher than the agreed contract amount. The only thing that shifts the price is scope: new features or meaningful changes require a written change order with an agreed price before work begins. This protects both parties.
+  </div>
 
   <hr>
 
