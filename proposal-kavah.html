@@ -167,6 +167,9 @@
     em { color: var(--muted); }
     strong { font-weight: 600; }
 
+    td a { color: var(--gold-light); text-decoration: none; }
+    td a:hover { text-decoration: underline; }
+
     /* ── Lightbox modal ── */
     #diagram-modal {
       display: none;
@@ -448,6 +451,47 @@
       .toc-grid a.active { color: var(--gold-dark); font-weight: 500; }
     }
 
+    /* ── Friends & Family Discount ── */
+    .friends-discount-card {
+      background: rgba(61,122,87,0.07);
+      border: 1px solid rgba(61,122,87,0.2);
+      border-left: 3px solid #3d7a57;
+      border-radius: 0 10px 10px 0;
+      padding: 24px 28px;
+      margin: 18px 0 28px;
+    }
+    .friends-discount-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .friends-label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #3d7a57;
+    }
+    .friends-original {
+      font-size: 0.88rem;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+    .friends-price {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #3d7a57;
+      letter-spacing: -0.025em;
+      margin-bottom: 10px;
+      line-height: 1.1;
+    }
+    .friends-note {
+      font-size: 0.875rem;
+      color: var(--muted);
+      margin: 0;
+    }
+
     /* ── Print ── */
     @media print {
       body { background: white; font-size: 13px; }
@@ -469,8 +513,6 @@
   <a href="index.html" class="doc-nav-back">← Kavah</a>
   <div class="doc-nav-links">
     <a href="proposal-kavah.html" class="doc-nav-link active">Proposal</a>
-    <span class="doc-nav-sep" aria-hidden="true">·</span>
-    <a href="spec-kavah.html" class="doc-nav-link">Tech Spec</a>
   </div>
 </nav>
 
@@ -496,9 +538,10 @@
       <li><span class="toc-num">09</span><a href="#cms-audio-flow">CMS &mdash; Audio Generation Flow</a></li>
       <li><span class="toc-num">10</span><a href="#milestone-payment">Milestone &amp; Timeline</a></li>
       <li><span class="toc-num">11</span><a href="#what-drives-estimate">What Drives the Estimate</a></li>
-      <li><span class="toc-num">12</span><a href="#post-launch-support">Post-Launch Support</a></li>
-      <li><span class="toc-num">13</span><a href="#out-of-scope">What's Not in Scope</a></li>
-      <li><span class="toc-num">14</span><a href="#next-steps">Next Steps</a></li>
+      <li><span class="toc-num">12</span><a href="#friends-discount">Friends &amp; Family Pricing</a></li>
+      <li><span class="toc-num">13</span><a href="#post-launch-support">Post-Launch Support</a></li>
+      <li><span class="toc-num">14</span><a href="#out-of-scope">What's Not in Scope</a></li>
+      <li><span class="toc-num">15</span><a href="#next-steps">Next Steps</a></li>
     </ol>
   </nav>
 
@@ -602,20 +645,20 @@
   <table>
     <thead><tr><th>Component</th><th>Technology</th><th>Why We Chose It</th></tr></thead>
     <tbody>
-      <tr><td>Backend API</td><td>Go</td><td>Fast, lean, handles concurrency well &mdash; built for the long run</td></tr>
-      <tr><td>Web Frontend</td><td>Go Templates + HTMX + Alpine.js</td><td>Server-rendered, PWA-capable, no heavy JS framework</td></tr>
-      <tr><td>Admin CMS</td><td>Go Templates + HTMX</td><td>Same codebase as frontend &mdash; no extra framework</td></tr>
-      <tr><td>Database</td><td>PostgreSQL</td><td>Relational, ACID-compliant, great for content + users</td></tr>
-      <tr><td>Cache</td><td>Redis</td><td>Sessions, rate limiting, API response caching</td></tr>
-      <tr><td>AI Voice</td><td>ElevenLabs TTS</td><td>Client-specified &mdash; warm, natural-quality NKJV audio</td></tr>
-      <tr><td>Audio Storage</td><td>AWS S3</td><td>Reliable, cheap at scale</td></tr>
-      <tr><td>Audio Delivery</td><td>AWS CloudFront</td><td>CDN-backed streaming &mdash; smooth on any connection</td></tr>
-      <tr><td>Bible Content</td><td>NKJV Licensed API</td><td>Full NKJV in backend; team curates what surfaces</td></tr>
+      <tr><td>Backend API</td><td><a href="https://go.dev" target="_blank" rel="noopener noreferrer">Go</a></td><td>Fast, lean, handles concurrency well &mdash; built for the long run</td></tr>
+      <tr><td>Web Frontend</td><td><a href="https://go.dev" target="_blank" rel="noopener noreferrer">Go Templates</a> + <a href="https://htmx.org" target="_blank" rel="noopener noreferrer">HTMX</a> + <a href="https://alpinejs.dev" target="_blank" rel="noopener noreferrer">Alpine.js</a></td><td>Server-rendered, PWA-capable, no heavy JS framework</td></tr>
+      <tr><td>Admin CMS</td><td><a href="https://go.dev" target="_blank" rel="noopener noreferrer">Go Templates</a> + <a href="https://htmx.org" target="_blank" rel="noopener noreferrer">HTMX</a></td><td>Same codebase as frontend &mdash; no extra framework</td></tr>
+      <tr><td>Database</td><td><a href="https://www.postgresql.org" target="_blank" rel="noopener noreferrer">PostgreSQL</a></td><td>Relational, ACID-compliant, great for content + users</td></tr>
+      <tr><td>Cache</td><td><a href="https://redis.io" target="_blank" rel="noopener noreferrer">Redis</a></td><td>Sessions, rate limiting, API response caching</td></tr>
+      <tr><td>AI Voice</td><td><a href="https://elevenlabs.io" target="_blank" rel="noopener noreferrer">ElevenLabs TTS</a></td><td>Client-specified &mdash; warm, natural-quality NKJV audio</td></tr>
+      <tr><td>Audio Storage</td><td><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener noreferrer">AWS S3</a></td><td>Reliable, cheap at scale</td></tr>
+      <tr><td>Audio Delivery</td><td><a href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener noreferrer">AWS CloudFront</a></td><td>CDN-backed streaming &mdash; smooth on any connection</td></tr>
+      <tr><td>Bible Content</td><td><a href="https://scripture.api.bible" target="_blank" rel="noopener noreferrer">NKJV Licensed API</a></td><td>Full NKJV in backend; team curates what surfaces</td></tr>
       <tr><td>Auth</td><td>Magic Link (email)</td><td>Passwordless &mdash; smooth UX, secure, no credential storage</td></tr>
-      <tr><td>Email</td><td>SendGrid</td><td>Magic links, waitlist emails, notifications</td></tr>
-      <tr><td>Donations</td><td>Stripe</td><td>Trusted payment processing, easy integration</td></tr>
-      <tr><td>Analytics</td><td>PostHog</td><td>Privacy-respecting, self-hostable, strong funnel analysis</td></tr>
-      <tr><td>Deployment</td><td>DigitalOcean</td><td>Cost-effective at Phase 1 scale, AWS-ready architecture</td></tr>
+      <tr><td>Email</td><td><a href="https://sendgrid.com" target="_blank" rel="noopener noreferrer">Twilio Twilio SendGrid</a></td><td>Magic links, waitlist emails, notifications</td></tr>
+      <tr><td>Donations</td><td><a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a></td><td>Trusted payment processing, easy integration</td></tr>
+      <tr><td>Analytics</td><td><a href="https://posthog.com" target="_blank" rel="noopener noreferrer">PostHog</a></td><td>Privacy-respecting, self-hostable, strong funnel analysis</td></tr>
+      <tr><td>Deployment</td><td><a href="https://www.digitalocean.com" target="_blank" rel="noopener noreferrer">DigitalOcean</a></td><td>Cost-effective at Phase 1 scale, AWS-ready architecture</td></tr>
     </tbody>
   </table>
 
@@ -627,13 +670,13 @@
   <table>
     <thead><tr><th>Service</th><th>What It Covers</th><th>Est. Monthly Cost</th></tr></thead>
     <tbody>
-      <tr><td>DigitalOcean</td><td>App server, managed PostgreSQL, Redis</td><td>$80 &ndash; $150</td></tr>
-      <tr><td>AWS S3</td><td>Audio file storage</td><td>$5 &ndash; $15</td></tr>
-      <tr><td>AWS CloudFront</td><td>Audio CDN delivery</td><td>$10 &ndash; $30</td></tr>
-      <tr><td>NKJV Bible API</td><td>Licensed scripture access</td><td>$50 &ndash; $200 <em>(varies by provider)</em></td></tr>
-      <tr><td>SendGrid</td><td>Magic links and email delivery</td><td>$0 &ndash; $20 <em>(free tier likely sufficient early on)</em></td></tr>
-      <tr><td>PostHog</td><td>Analytics</td><td>$0 <em>(free tier)</em></td></tr>
-      <tr><td>Stripe</td><td>Donation processing</td><td>2.9% + $0.30 per transaction <em>(no monthly fee)</em></td></tr>
+      <tr><td><a href="https://www.digitalocean.com" target="_blank" rel="noopener noreferrer">DigitalOcean</a></td><td>App server, managed PostgreSQL, Redis</td><td>$80 &ndash; $150</td></tr>
+      <tr><td><a href="https://aws.amazon.com/s3/" target="_blank" rel="noopener noreferrer">AWS S3</a></td><td>Audio file storage</td><td>$5 &ndash; $15</td></tr>
+      <tr><td><a href="https://aws.amazon.com/cloudfront/" target="_blank" rel="noopener noreferrer">AWS CloudFront</a></td><td>Audio CDN delivery</td><td>$10 &ndash; $30</td></tr>
+      <tr><td><a href="https://scripture.api.bible" target="_blank" rel="noopener noreferrer">NKJV Bible API</a></td><td>Licensed scripture access</td><td>$50 &ndash; $200 <em>(varies by provider)</em></td></tr>
+      <tr><td><a href="https://sendgrid.com" target="_blank" rel="noopener noreferrer">Twilio Twilio SendGrid</a></td><td>Magic links and email delivery</td><td>$0 &ndash; $20 <em>(free tier likely sufficient early on)</em></td></tr>
+      <tr><td><a href="https://posthog.com" target="_blank" rel="noopener noreferrer">PostHog</a></td><td>Analytics</td><td>$0 <em>(free tier)</em></td></tr>
+      <tr><td><a href="https://stripe.com" target="_blank" rel="noopener noreferrer">Stripe</a></td><td>Donation processing</td><td>2.9% + $0.30 per transaction <em>(no monthly fee)</em></td></tr>
       <tr><td>Domain + SSL</td><td>Annual renewal</td><td>~$1 &ndash; $2 <em>(billed yearly)</em></td></tr>
       <tr class="total-row"><td>Estimated Total</td><td></td><td>~$145 &ndash; $415 / mo</td></tr>
     </tbody>
@@ -676,7 +719,7 @@ graph TB
     EL["ElevenLabs API\nTTS Audio Generation"]
     S3["AWS S3\nGenerated Audio Files"]
     CDN["CloudFront CDN\nAudio Streaming"]
-    SendGrid["SendGrid\nMagic Links · Email"]
+    Twilio SendGrid["Twilio SendGrid\nMagic Links · Email"]
     Stripe["Stripe\nDonations"]
     PostHog["PostHog\nAnalytics"]
 
@@ -685,7 +728,7 @@ graph TB
     EL --> S3
     API --> S3
     S3 --> CDN
-    API --> SendGrid
+    API --> Twilio SendGrid
     API --> Stripe
     API --> PostHog
     </div>
@@ -774,7 +817,7 @@ sequenceDiagram
     </tbody>
   </table>
 
-  <p style="font-size:1.05rem;"><strong>Estimated Total: $32,000 &ndash; $42,000</strong></p>
+  <p style="font-size:1.05rem;"><strong>Estimated Total: $30,200 &ndash; $39,000</strong></p>
   <p style="font-size:0.88rem; color:var(--muted); margin-top:-6px;">The low end assumes clean third-party integrations, design approval within two revision rounds, and no major surprises during development. The high end accounts for additional revision cycles, integration complexity with the NKJV API, and iOS audio auto-play edge cases &mdash; the trickiest technical piece of this build.</p>
 
   <div class="callout">
@@ -789,7 +832,7 @@ sequenceDiagram
     <div class="breakdown-item">
       <div class="breakdown-header">
         <span class="breakdown-title">UI/UX Design</span>
-        <span class="hours-badge">35&ndash;45 hrs</span>
+        <span class="hours-badge">20 hrs</span>
       </div>
       <ul>
         <li>Full screen inventory for mobile: home, browse, search, account, sign-in, donation, waitlist, and empty states</li>
@@ -817,7 +860,7 @@ sequenceDiagram
         <span class="hours-badge">12&ndash;16 hrs</span>
       </div>
       <ul>
-        <li>Passwordless email sign-in: secure token generation, SendGrid delivery, validation, and expiry</li>
+        <li>Passwordless email sign-in: secure token generation, Twilio SendGrid delivery, validation, and expiry</li>
         <li>Persistent session management across devices via Redis</li>
         <li>Secure account deletion and data removal flow (Right To Be Forgotten / GDPR compliance)</li>
       </ul>
@@ -909,7 +952,7 @@ sequenceDiagram
         <span class="hours-badge">14&ndash;18 hrs</span>
       </div>
       <ul>
-        <li>Magic link delivery via SendGrid with reliable deliverability configuration</li>
+        <li>Magic link delivery via Twilio SendGrid with reliable deliverability configuration</li>
         <li>Waitlist confirmation emails and list management</li>
         <li>Transactional email templates, brand-aligned with Kavah&rsquo;s visual identity</li>
       </ul>
@@ -982,12 +1025,26 @@ sequenceDiagram
 
   <div class="breakdown-total">
     <span>Total Estimated Hours</span>
-    <span>261&ndash;344 hrs</span>
+    <span>246&ndash;319 hrs</span>
   </div>
 
   <div class="guarantee-callout">
     <strong>Fixed-price means no surprises.</strong>
     The total above is fixed &mdash; not a starting point. If a feature takes longer than estimated, that&rsquo;s our risk, not yours. You will never receive an invoice higher than the agreed contract amount. The only thing that shifts the price is scope: new features or meaningful changes require a written change order with an agreed price before work begins. This protects both parties.
+  </div>
+
+  <hr>
+
+  <h2 id="friends-discount">Friends &amp; Family Pricing</h2>
+  <p>The estimate above reflects the full scope and market rate for this build. The price below applies a friends &amp; family discount &mdash; same deliverables, same milestones, same 30-day bug warranty. Nothing is cut.</p>
+
+  <div class="friends-discount-card">
+    <div class="friends-discount-top">
+      <span class="friends-label">Friends &amp; Family Rate</span>
+      <del class="friends-original">$30,200 &ndash; $39,000</del>
+    </div>
+    <div class="friends-price">$20,000</div>
+    <p class="friends-note">All scope, quality, and terms described in this proposal apply in full. Milestone payment structure remains the same &mdash; 20% at signing, 25% at design approval, 25% at delivery for review, 30% at launch.</p>
   </div>
 
   <hr>
@@ -1026,7 +1083,7 @@ sequenceDiagram
     </tbody>
   </table>
 
-  <p>Third-party outages &mdash; ElevenLabs, the Bible API, AWS, SendGrid &mdash; are outside this scope, though we&rsquo;ll help diagnose and coordinate with vendors if they occur.</p>
+  <p>Third-party outages &mdash; ElevenLabs, the Bible API, AWS, Twilio SendGrid &mdash; are outside this scope, though we&rsquo;ll help diagnose and coordinate with vendors if they occur.</p>
 
   <hr>
 
